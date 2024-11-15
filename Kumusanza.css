@@ -1,0 +1,719 @@
+#weatherDisplay {
+    width: 95%;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: rgba(250, 250, 250, 0.4);
+}
+
+
+.top-display {
+    display: flex;
+    align-items: center; /* Vertically center items */
+    justify-content: center; /* Center the items horizontally */
+}
+
+.temperature {
+    font-family: 'Roboto', sans-serif;
+    font-size: 2rem;
+    color: darkgreen; /* Default color */
+    margin-right: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    transition: color 0.3s; /* Smooth transition when color changes */
+}
+
+
+.weather-icon img {
+    width: 90px;
+    height: auto;
+    filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.5)); /* Adds a subtle shadow */
+}
+
+.weather-details {
+    justify-content: space-between;
+    font-family: 'Open Sans';
+    font-weight: bold;
+}
+
+
+#forecastDisplay{
+    width: 95%;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  background-color: rgba(250, 250, 250, 0.3); /* last value is alpha, 0 is transparent, 1 is opaque */
+}
+
+/* Hover Effect */
+#forecastDisplay:hover {
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Forecast Item */
+.forecast-item {
+    overflow-x: auto;
+    text-align: center;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgba(0, 3, 4, 0.7);
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Time Text */
+.forecast-item p strong {
+    font-size: 1.1em;
+    color: #00796b;
+}
+
+/* Temperature and Icon Container */
+.hour-top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+}
+
+/* Temperature Text */
+.hour-temp {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Weather Icon Styling */
+.forecast-icon img {
+    width: 60px;
+    height: auto;
+    max-width: 100%;
+    filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.5));
+}
+
+/* Weather Description */
+#forecastDisplay p {
+    font-size: 0.9em;
+    color: #555;
+    margin: 5px 0;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    #forecastDisplay {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .forecast-item {
+        flex: 1 1 100%;
+        margin: 5px 0;
+    }
+
+    .forecast-icon img {
+        width: 45px;
+    }
+
+    .hour-temp {
+        font-size: 1em;
+    }
+}
+/* Hamburger menu styles */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #e0f7fa; /* Light cyan background */
+    color: #333;
+}
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
+
+.language-menu {
+    display: none;
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    padding: 10px;
+    list-style: none;
+    border-radius: 5%;
+}
+
+.language-menu ul {
+    padding: 0;
+    margin: 0;
+}
+
+.language-menu li {
+    border-bottom: 1px solid gray; 
+    padding: 5px 10px;
+    cursor: pointer;
+}
+.language-menu li:last-child {
+    border-bottom: none;
+}
+
+.language-menu li:hover {
+    background-color: #f0f0f0;
+}
+
+
+.unitsDropdown{
+    position: absolute;
+    display: none;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    max-height: 200px;
+    overflow-y: auto;
+    border-radius: 5px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 4px;
+}
+
+
+#listOfFavourites {
+    position: absolute;
+    display: none;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    max-height: 200px;
+    overflow-y: auto;
+    border-radius: 5px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 4px;
+}
+
+#listOfFavourites div {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #ccc;
+}
+
+#listOfFavourites div:last-child {
+    border-bottom: none;
+}
+
+#listOfFavourites div:hover {
+    background-color: #e0e0e0;
+}
+
+.container.sunny {
+    background-image: url('https://images.pexels.com/photos/789152/pexels-photo-789152.jpeg');
+    background-position: center;
+    background-size: cover;
+}
+
+.container.thunderstorm {
+    background: url('https://images.unsplash.com/photo-1492011221367-f47e3ccd77a0?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    background-position: center;
+    background-size: cover;
+}
+
+.container.rainy {
+    background: url('https://images.pexels.com/photos/2144326/pexels-photo-2144326.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+    background-position: center;
+    background-size: cover;
+}
+
+
+.container.default{
+    background: url('https://img.freepik.com/free-photo/vertical-shot-thick-green-trees-calm-sky-with-few-clouds_181624-7403.jpg?t=st=1730970666~exp=1730974266~hmac=d8132430bcae602cfb45a169c8046af52e8a84ec68f1ecb595ce37acfdbfa9b2&w=1060');
+    background-position: center;
+    background-size: cover;
+}
+
+.container.cloudy {
+    background-image: url('https://img.freepik.com/free-photo/beautiful-skyscape-daytime_23-2149265589.jpg?t=st=1730973843~exp=1730977443~hmac=d1bd062b443ba27b6e9c744a6eaf2a9c01013f28ae82ed3c5808a46e97632eb0&w=1060');
+    background-position: center;
+    background-size: cover;
+}
+
+
+.menu-content {
+    font-weight: 500;
+    border: 1px solid teal;
+    display: none;
+    position: absolute;
+    top: 50px;
+    left: 10px;
+    background-color: #e0f7fa;
+    color: #333;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 1;
+}
+
+.menu-content {
+    display: none;
+    font-weight: 500;
+    border: 1px solid teal;
+    display: none;
+    position: absolute;
+    top: 50px;
+    left: 10px;
+    background-color: #e0f7fa;
+    color: #333;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 1;
+}
+
+.menu-content a {
+    text-align: left;
+    padding: 8px 0;  /* Space above and below each item */
+    border-bottom: 1px solid #00796b;  /* Dividing line between items */
+}
+
+.menu-content a:last-child {
+    border-bottom: none;
+}
+.menu-content a {
+    display: block;
+    padding: 8px 16px;
+    color: #00796b;
+    text-decoration: none;
+}
+
+.menu-content a:hover {
+    background-color: #b2dfdb;
+}
+
+.menu-content ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu-content ul li {
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.menu-content ul li:hover {
+    background-color: #b2dfdb;
+}
+
+/* Show the menu when the 'show' class is added */
+.menu-content.show {
+    display: block;
+}
+
+/* Weather display styles */
+#weatherDisplay h3, #forecastDisplay h3 {
+    margin-bottom: 7px;
+    color: #00796e; /* Teal color for section titles */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    font-size: 1.3em;
+}
+
+#weatherDisplay p, #forecastDisplay p {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #333; /* Dark text for readability */
+    font-family: 'Open sans'
+}
+
+
+/* Button styles */
+.search-button {
+    background-color: #00796b; /* Teal color */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.search-button:hover {
+    background-color: #004d40; /* Darker teal on hover */
+}
+.forecast-item {
+    opacity: 0.75;
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #cfd8dc; /* Light grey border */
+    border-radius: 20px; /* Smoother rounded corners */
+    background-color: #e0f7fa; /* Light cyan background */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow for floating effect */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-emphasis: black;
+}
+
+/* Hover effect for floating animation */
+.forecast-item:hover {
+    transform: translateY(-5px); /* Slight lift on hover */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* Darker, deeper shadow */
+}
+/* Input styles */
+input[type="text"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* Horizontal scrolling for hourly forecast */
+.hourly-forecast {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.forecast-item {
+    min-width: 120px; /* Minimum width for each forecast item */
+    margin-right: 10px; /* Space between items */
+    flex: none; /* Prevent flex item from growing */
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+
+    .forecast-item {
+        min-width: 100px; /* Adjust minimum width for smaller screens */
+    }
+}
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+.lining {
+    text-align: center;
+}
+
+.time {
+    text-align: center;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.5em;
+    color: darkgreen;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 255, 255, 0.6);
+    animation: pulse 2s infinite;
+    display: inline-block;
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px; 
+    font weight: bold;
+}
+
+/* Animation for a subtle pulsing effect */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 255, 255, 0.6);
+    }
+    50% {
+        transform: scale(1.05);
+        text-shadow: 0 0 20px rgba(0, 0, 0, 1), 0 0 30px rgba(255, 255, 255, 0.8);
+    }
+}
+
+.menu-icon {
+    font-size: 30px;
+    cursor: pointer;
+    padding: 5px;
+    margin: 10px;
+    color: #00796b; /* Teal color */
+}
+
+/* Make the headbox fixed */
+.headbox {
+    text-align: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 3px;
+    background-color: #e0f7fa;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 50px; /* Explicit height (adjust as needed) */
+    display: flex;
+    align-items: center; /* Centers the content vertically */
+}
+
+/* Add some margin-top to the container to avoid overlap */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    margin-top: 40px;
+    overflow-y: auto;
+}
+
+
+/* Footer container */
+.UnderCredits {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px; /* Space between buttons */
+    padding: 15px;
+    border-top: 1px solid #ddd;
+    flex-wrap: wrap;
+}
+
+/* Button styling */
+.link {
+    padding: 8px 16px; /* Compact padding */
+    font-size: 14px;
+    color: #333;
+    background-color: #e0e0e0;
+    border-radius: 6px;
+    transition: transform 0.2s, background-color 0.2s;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+}
+
+.link:hover {
+    transform: translateY(-2px);
+    background-color: #007BFF;
+    color: #fff;
+}
+
+/* Information sections */
+#aboutInfo, #helpInfo, #contactInfo {
+    display: none; /* Hidden by default */
+    background-color: #f1f1f1;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 700px;
+    color: #333;
+    font-size: 15px;
+    line-height: 1.6;
+    position: absolute;
+    overflow-y: auto;
+    border: 1px, solid, teal;
+    width: 300px;
+    max-height: 400px;
+    left: 10px;
+}
+
+/* Styling for headers and paragraphs within info sections */
+#aboutInfo h3, #helpInfo h3, #contactInfo h3 {
+    color: #007BFF;
+    margin-top: 0;
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+    .UnderCredits {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .link {
+        padding: 8px 12px;
+    }
+
+}
+
+
+/* Basic Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Cities Dropdown Menu */
+.cities-menu {
+    position: absolute;
+    display: none;
+    background-color: #f8f9fa; /* Light background */
+    border: 1px solid #ccc; /* Border color */
+    border-radius: 8px; /* Rounded corners */
+    width: 300px; /* Width of the dropdown */
+    max-height: 300px; /* Max height */
+    overflow-y: auto; /* Scroll if needed */
+    padding: 10px; /* Padding inside the dropdown */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* List Style */
+.cities-menu ul {
+    list-style: none; /* Remove default list styling */
+}
+
+/* List Item Style */
+.cities-menu li {
+    display: flex; /* Flexbox for alignment */
+    justify-content: space-between; /* Space between city name and button */
+    align-items: center; /* Center alignment */
+    padding: 8px; /* Padding around list items */
+    transition: background-color 0.2s; /* Smooth background transition */
+}
+
+/* Hover Effect */
+.cities-menu li:hover {
+    background-color: #e2e6ea; /* Light grey on hover */
+}
+
+/* City Name Style */
+.cities-menu span {
+    font-size: 16px; /* Font size for city names */
+    color: #333; /* Text color */
+    cursor: pointer; /* Pointer cursor for clickable items */
+}
+
+/* Button Style */
+.cities-menu button {
+    background-color: #007bff; /* Primary button color */
+    color: #fff; /* Button text color */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 5px 10px; /* Padding for the button */
+    font-size: 14px; /* Button font size */
+    cursor: pointer; /* Pointer cursor for button */
+    transition: background-color 0.3s, transform 0.2s; /* Transition for effects */
+}
+
+/* Button Hover Effect */
+.cities-menu button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: scale(1.05); /* Slightly larger on hover */
+}
+
+/* Button Focus Effect */
+.cities-menu button:focus {
+    outline: none; /* Remove default focus outline */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5); /* Custom focus outline */
+}
+/* Favourite Button Style */
+.Fav {
+    background-color: teal;
+    color: white; /* White text color */
+    border: none; /* Remove default border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px 15px; /* Padding for the button */
+    font-size: 16px; /* Font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: transform 0.2s; /* Transition effects */
+    transition: background-color 0.3s ;
+}
+
+/* Hover Effect */
+.Fav:hover {
+    background-color: navy; /* Darker green on hover */
+    transform: scale(1.05); /* Slightly larger on hover */
+}
+
+/* Active Effect */
+.Fav:active {
+    background-color: #1e7e34; /* Even darker green when active */
+    transform: scale(0.95); /* Slightly smaller when clicked */
+}
+
+/* Focus Effect */
+.Fav:focus {
+    outline: none; /* Remove default focus outline */
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.5); /* Custom focus outline */
+}
+
+.loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loader div {
+    width: 10px;
+    height: 10px;
+    margin: 5px;
+    border-radius: 50%;
+    background-color: aliceblue;
+    animation: bounce 0.4s infinite alternate;
+    z-index: 1;
+    display: block;
+}
+
+.loader div:nth-child(2) {
+    animation-delay: 0.2s; /* Delay for the second dot */
+}
+
+.loader div:nth-child(3) {
+    animation-delay: 0.4s; /* Delay for the third dot */
+}
+
+@keyframes bounce {
+    to {
+        transform: translateY(-20px);
+    }
+}
+
+/* Basic Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+footer{
+    text-align: center;
+    overflow-x: ;
+}
+.notification {
+    padding: 12px 20px;
+    background-color: #00796b;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 8px;
+    position: fixed;
+    top: 150px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100%);
+    z-index: 1000;
+    display: block;
+    opacity: 0.9;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.align{
+   display: inline-block;
+    text-align: center;
+}
+.subtitle{
+    text-align: center;
+    color: #00796b;
+    font-family: 'Pacifico', cursive;
+    font-size: 2em;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    text-shadow: 3px 3px 3px rgba(10, 50, 90, 0.8);
+    font-weight: 1000;
+    background-color: transparent;  /* Normal background (no fill) */
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: inline-block;
+    
+}
+
+h2 {
+    font-size: 17px;
+    font-weight: 500;
+    color: #004d40;  /* Slightly darker shade of green */
+    letter-spacing: 0.25px;
+    text-transform: uppercase;
+    text-align: center;
+    display: block;
+    margin-top: 8px;
+    margin-bottom: 16px;
+    font-family: 'Arial', sans-serif;  /* A more compact sans-serif font */
+    padding: 5px 10px;  /* Less padding for a more compact feel */
+    }

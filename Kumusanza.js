@@ -1,0 +1,825 @@
+//OpenWeatherMap API key
+const weatherApiKey = 'cd8161af3d4a4608f689e4dc5f2613dc';
+
+// Default settings for units and location
+const unitsConfig = {
+    pressure: localStorage.getItem('pressureUnit') || 'metric',
+    temperature: localStorage.getItem('temperatureUnit') || 'metric',
+    windSpeed: localStorage.getItem('windSpeedUnit') || 'metric',
+};
+
+let defaultLocation = localStorage.getItem('defaultLocation') || 'Livingstone';
+let language = localStorage.getItem('language') || 'en';
+let favourites = JSON.parse(localStorage.getItem('favourites')) || [];
+let cityName = '';
+// Initialize the application
+document.addEventListener('DOMContentLoaded', init);
+
+function init() {
+    updateFavouritesList();
+    // Add other initialization tasks if needed
+    startClock();
+}
+
+// Translation dictionary
+const translations = {
+    en: {
+        localTime: "Local time",
+        sunrise: "Sunrise",
+        sunset: "Sunset",
+        cloudiness: "Cloudiness",
+        humidity: "Humidity",
+        pressure: "Pressure",
+        windSpeed: "Wind Speed",
+        windDirection: "Wind Direction",
+        feelsLike: "Feels Like",
+        condition: "Condition",
+        currentWeather: "Current Weather in",
+        weeklyForecast: "Weekly Forecast",
+        fiveDayForecast: "5 day Forecast"
+            },
+    fr: {
+        localTime: "heure locale",
+        sunrise: "Lever du soleil",
+        sunset: "Coucher du soleil",
+        cloudiness: "Nuageux",
+        humidity: "Humidité",
+        pressure: "Pression",
+        windSpeed: "Vitesse du vent",
+        windDirection: "Direction du vent",
+        feelsLike: "Ressenti",
+        condition: "Condition",
+        currentWeather: "Météo actuelle à",
+        weeklyForecast: "Prévisions hebdomadaires",
+        fiveDayForecast: "Prévisions sur 5 jours"
+    }
+};
+function translate(keyword) {
+    return translations[language] && translations[language][keyword] ? translations[language][keyword] : keyword;
+}
+
+
+// Declare global variables for units
+let temperatureUnit = localStorage.getItem('temperatureUnit') || 'metric';
+let windSpeedUnit = localStorage.getItem('windSpeedUnit') || 'metric';
+
+document.addEventListener('DOMContentLoaded', async () => {
+    // Render cities
+    renderCities();
+
+    // Set up event listeners for unit toggles
+    document.getElementById('imperialBtn')?.addEventListener('click', setImperialUnits);
+    document.getElementById('metricBtn')?.addEventListener('click', setMetricUnits);
+
+    const unitsLink = document.getElementById("unitsLink");
+    unitsLink?.addEventListener('click', toggleUnits);
+
+    // Get user location (await if it's asynchronous)
+    await getUserLocation();
+
+    // Home button event listener
+    const homeButton = document.getElementById('homeButton');
+    homeButton?.addEventListener('click', goHome);
+
+    // Hamburger menu event listener
+    const menuIcon = document.getElementById('menu-icon');
+    const menu = document.getElementById('menu');
+    menuIcon?.addEventListener('click', toggleMenu);
+
+    // Favourites event listeners
+    const addToFavouritesButton = document.getElementById('addToFavouritesButton');
+    const favouritesList = document.getElementById('favourites-list');
+    addToFavouritesButton?.addEventListener('click', addCurrentCityToFavourites);
+    favouritesList?.addEventListener('click', toggleListOfFavourites);
+
+    // Cities dropdown event listener
+    const citiesLink = document.getElementById('citiesLink');
+    citiesLink?.addEventListener('click', toggleCities);
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', event => {
+        const citiesDropdown = document.getElementById('citiesDropdown');
+        if (citiesDropdown && !event.target.closest('#citiesDropdown') && !event.target.closest('#citiesLink')) {
+            citiesDropdown.style.display = 'none';
+        }
+    });
+});
+// Toggle hamburger menu
+function toggleMenu() {
+    menu.classList.toggle("show");
+
+    if (menu.classList.contains("show")) {
+        // Listen for clicks outside the menu to close it
+        window.addEventListener('click', outsideClickHandler);
+    } else {
+        // Remove the outside click listener
+        window.removeEventListener('click', outsideClickHandler);
+    }
+}
+
+function outsideClickHandler(event) {
+    const menuIcon = document.getElementById('menu-icon'); // Ensure it is accessible here
+    if (!event.target.closest('#menu') && event.target !== menuIcon) {
+        menu.classList.remove("show");
+        window.removeEventListener('click', outsideClickHandler);
+    }
+}
+
+// Toggle visibility of cities dropdown
+// Function to toggle the cities dropdown
+function toggleCities() {
+    var citiesDropdown = document.getElementById("citiesDropdown");
+    // Toggle between showing and hiding the dropdown
+    citiesDropdown.style.display = (citiesDropdown.style.display === "none" || citiesDropdown.style.display === "") ? "block" : "none";
+}
+
+// Close the cities dropdown if clicking outside of it
+document.addEventListener('click', function(event) {
+    const citiesDropdown = document.getElementById("citiesDropdown");
+    const citiesLink = document.getElementById('citiesLink');
+    
+    // Close dropdown if click is outside of the cities dropdown and the cities link
+    if (citiesDropdown && !event.target.closest('#citiesDropdown') && !event.target.closest('#citiesLink')) {
+        citiesDropdown.style.display = 'none';
+    }
+});
+
+async function getWeather(cityName) {
+    const cityWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(cityName)}&appid=${weatherApiKey}&units=${temperatureUnit}&lang=${language}`;
+
+    try {
+        showLoader();
+
+        // Check for network connection
+        if (!navigator.onLine) {
+            showNotification('No network connection. Please check your Internet');
+            hideLoader(); // Hide loader if no network connection
+            return; // Exit function if no internet
+        }
+
+        const response = await fetch(cityWeatherUrl);
+
+        if (!response.ok) {
+            showNotification(`Error fetching weather data for ${cityName}`);
+            return; // Exit if the response is not okay
+        }
+
+        const data = await response.json();
+
+        // Get the main weather condition (e.g., 'Clear', 'Rain', 'Clouds')
+        const weatherCondition = data.weather[0].main;
+        updateContainerBackground(weatherCondition); // Update the container background
+
+        // Display the current weather
+        displayCurrentWeather(cityName, data);
+
+        // Set cityName to reflect the city from the weather data
+        cityName = data.name;
+
+        // Proceed to fetch the 5-day forecast if coordinates are available
+        if (data.coord) {
+            const { lat, lon } = data.coord;
+            await fetch5DayForecast(lat, lon);
+        } else {
+            throw new Error("Coordinates not available for the selected city.");
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('Unable to fetch weather data. Please try again later.');
+    } finally {
+        hideLoader(); // Hide loader after everything is done
+    }
+}
+
+// Fetch 5-day forecast in 3-hour intervals using city coordinates (lat, lon)
+async function fetch5DayForecast(lat, lon) {
+    const forecastApiUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${weatherApiKey}&units=${temperatureUnit}&lang=${language}`;
+
+    try {
+        const response = await fetch(forecastApiUrl);
+        if (!response.ok) {
+            throw new Error('Error fetching 5-day forecast data');
+        }
+
+        const forecastData = await response.json();
+        const dailySummaries = summarizeDailyForecasts(forecastData.list);
+        display5DayForecast(dailySummaries);
+
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('Unable to fetch forecast data. Please try again later.');
+    }
+}
+
+// Summarize hourly forecasts into daily summaries with hourly details
+function summarizeDailyForecasts(forecastList) {
+    const dailyData = {};
+
+    forecastList.forEach(forecast => {
+        const forecastDate = new Date(forecast.dt * 1000);
+        const date = forecastDate.toLocaleDateString();
+        const time = forecastDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        if (!dailyData[date]) {
+            dailyData[date] = {
+                hours: [],
+                tempMax: forecast.main.temp,
+                tempMin: forecast.main.temp,
+                weatherDescription: forecast.weather[0].description,
+                count: 0
+            };
+        }
+
+        dailyData[date].hours.push({
+            time: time,
+            temp: forecast.main.temp,
+            weatherDescription: forecast.weather[0].description,
+            icon: forecast.weather[0].icon
+        });
+
+        // Update max and min temperature for the day
+        dailyData[date].tempMax = Math.max(dailyData[date].tempMax, forecast.main.temp);
+        dailyData[date].tempMin = Math.min(dailyData[date].tempMin, forecast.main.temp);
+        dailyData[date].count++;
+    });
+
+    return dailyData;
+}
+
+// Function to display the 5-day forecast with hourly scrolling for each day
+function display5DayForecast(dailySummaries) {
+    const forecastDisplay = document.getElementById('forecastDisplay');
+    forecastDisplay.innerHTML = `<h3>${translate('fiveDayForecast')}</h3>`;
+
+    Object.keys(dailySummaries).forEach(date => {
+        const dailyForecast = dailySummaries[date];
+        const dayContainer = document.createElement('div');
+        dayContainer.classList.add('day-container');
+
+        const dayHeader = document.createElement('h4');
+        dayHeader.textContent = date;
+        dayContainer.appendChild(dayHeader);
+
+        const hourlyForecast = document.createElement('div');
+        hourlyForecast.classList.add('hourly-forecast');
+
+        dailyForecast.hours.forEach(hour => {
+            const forecastItem = document.createElement('div');
+            forecastItem.classList.add('forecast-item');
+            
+            forecastItem.innerHTML = `
+    <p><strong>${hour.time}</strong></p>
+   <span class = "hour-top"> <span class="forecast-icon">
+        <img src="https://openweathermap.org/img/wn/${hour.icon}@2x.png" alt="${hour.weatherDescription}" />
+    </span><span class = "hour-temp"> ${hour.temp}°C</span></span>
+    <p>${hour.weatherDescription}</p>
+    
+`;
+
+            hourlyForecast.appendChild(forecastItem);
+        });
+
+        dayContainer.appendChild(hourlyForecast);
+        forecastDisplay.appendChild(dayContainer);
+    });
+}
+
+
+// Function to get the user's location using async/await
+async function getUserLocation() {
+    try {
+        if (!navigator.geolocation) {
+            throw new Error("Geolocation is not supported by this browser.");
+        }
+
+        const position = await getCurrentPositionAsync();
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+
+        console.log(`User location: Latitude = ${lat}, Longitude = ${lon}`);
+        await fetchWeatherByCoordinates(lat, lon);
+    } catch (error) {
+        console.error('Geolocation error:', error);
+        showNotification("Unable to retrieve your location. Showing weather for default city.");
+        await getWeather(defaultLocation); // Fallback to default city if geolocation fails
+    }
+}
+
+// Helper function to wrap geolocation.getCurrentPosition() in a Promise
+async function getCurrentPositionAsync() {
+    return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject);
+    });
+}
+
+// Function to fetch weather data by coordinates using async/await
+async function fetchWeatherByCoordinates(lat, lon) {
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${weatherApiKey}&units=metric`;
+
+    console.log(`Fetching weather data from: ${url}`);
+
+    try {
+        const response = await fetch(url);
+
+        // Check if the response is successful (status code 200)
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`API error: ${response.status} - ${errorData.message}`);
+        }
+
+        const data = await response.json();
+        console.log("Weather data received:", data);
+        displayCurrentWeather(data);
+    } catch (error) {
+        console.error("Error fetching weather data:", error);
+        showNotification("Failed to fetch weather data. Please check your internet connection.");
+        await getWeather(defaultLocation); 
+        // Fallback to default city if API call fails
+    }
+}
+
+
+// Function to handle manual city search with async/await
+async function fetchCityWeather() {
+    const cityInput = document.getElementById('cityInput').value;
+    cityName = cityInput;
+    
+    if (cityInput) {
+        try {
+            await getWeather(cityInput); // Await the weather fetch
+        } catch (error) {
+            console.error("Error fetching city weather:", error);
+            showNotification("Unable to fetch weather data for the entered city.");
+        }
+    } else {
+        showNotification("Please enter a city name.");
+    }
+}
+document.getElementById('cityInput').addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        showLoader();
+        const cityInput = document.getElementById('cityInput');
+        getWeather(cityInput.value);
+        cityInput.value = ""; // Clear the input explicitly
+    }
+});
+
+// Function to handle Home button with async/await
+async function goHome() {
+    const menu = document.getElementById('menu');
+    if (menu) {
+        menu.classList.remove("show"); // Hide the menu using class control
+    }
+    
+    try {
+        await getWeather(defaultLocation); // Wait for the weather data to be fetched
+    } catch (error) {
+        console.error('Error fetching default location weather:', error);
+        showNotification('Unable to fetch weather data for the default location.');
+    }
+}
+
+function toggleUnits(event) {
+    event.preventDefault(); // Prevent the default link behavior
+
+    const unitsDropdown = document.getElementById("unitsDropdown");
+    const isVisible = unitsDropdown.style.display === "block";
+
+    // Toggle visibility of the dropdown
+    unitsDropdown.style.display = isVisible ? "none" : "block";
+
+    // Add or remove the click outside handler based on visibility
+    if (!isVisible) {
+        document.addEventListener('click', outsideUnitsClickHandler);
+    } else {
+        document.removeEventListener('click', outsideUnitsClickHandler);
+    }
+}
+
+// Handler for clicks outside the units dropdown
+function outsideUnitsClickHandler(event) {
+    const unitsDropdown = document.getElementById("unitsDropdown");
+    const unitsLink = document.getElementById("unitsLink");
+
+    // Close the dropdown if the click is outside the dropdown and not on the link
+    if (!event.target.closest('#unitsDropdown') && event.target !== unitsLink) {
+        unitsDropdown.style.display = "none";
+        document.removeEventListener('click', outsideUnitsClickHandler);
+    }
+}
+
+
+
+// Constants for unit symbols
+const unitSymbols = {
+    temperature: {
+        metric: '°C',
+        imperial: '°F'
+    },
+    windSpeed: {
+        metric: 'm/s',
+        imperial: 'mph'
+    },
+    pressure: {
+        metric: 'hPa',
+        imperial: 'inHg'
+}
+}
+
+// Function to set and save units to local storage, then update the weather display
+async function setImperialUnits() {
+    setTemperatureUnit('imperial'); // Set temperature unit to imperial
+    setWindSpeedUnit('imperial'); 
+    setPressureUnit('imperial');  
+showNotification('Units succesfully set to Imperial');    
+    await getWeather(cityName || defaultLocation); // Fetch updated weather data
+}
+
+async function setMetricUnits() {
+    setTemperatureUnit('metric');   
+    setWindSpeedUnit('metric');     
+    setPressureUnit('metric');
+    showNotification('Units succesfully set to Metric');
+    await getWeather(cityName || defaultLocation);
+}
+
+// Function to update and save the temperature unit
+function setTemperatureUnit(unit) {
+    temperatureUnit = unit; // Ensure temperatureUnit is defined in your code
+    localStorage.setItem('temperatureUnit', unit);
+}
+
+// Function to update and save the wind speed unit
+function setWindSpeedUnit(unit) {
+    windSpeedUnit = unit; // Ensure windSpeedUnit is defined in your code
+    localStorage.setItem('windSpeedUnit', unit);
+}
+
+// Function to update and save the pressure unit
+function setPressureUnit(unit) {
+    pressureUnit = unit;
+    localStorage.setItem('pressureUnit', unit);
+}
+
+/// Function to set the default location and show a notification
+function setDefaultLocation(location) {
+    defaultLocation = location;
+    localStorage.setItem('defaultLocation', location);
+
+    // Show the success notification that the city has been set as default
+    showNotification(`${location} has been successfully set as default.`);
+}
+
+
+let clockInterval;
+let timezoneOffset = 0; // Default value (in seconds)
+let cityTime = ''; // Variable to store the city's local time
+
+function updateClock() {
+    const timeDisplay = document.getElementById('time');
+
+    if (!timeDisplay) {
+        console.error("Time display element not found.");
+        return;
+    }
+
+    // Get the current UTC time
+    const now = new Date();
+    const utcTime = now.getTime() + now.getTimezoneOffset() * 60000;
+
+    // Calculate the local time for the searched city
+    const cityLocalTime = new Date(utcTime + timezoneOffset * 1000);
+    const cityHours = String(cityLocalTime.getHours()).padStart(2, '0');
+    const cityMinutes = String(cityLocalTime.getMinutes()).padStart(2, '0');
+    const citySeconds = String(cityLocalTime.getSeconds()).padStart(2, '0');
+    cityTime = `${cityHours}:${cityMinutes}:${citySeconds}`; // Store the city's local time
+
+    // Display the current time in your location
+    const localHours = String(now.getHours()).padStart(2, '0');
+    const localMinutes = String(now.getMinutes()).padStart(2, '0');
+    const localSeconds = String(now.getSeconds()).padStart(2, '0');
+
+    // Update the time display in the div with id 'time'
+    timeDisplay.textContent = `${localHours}:${localMinutes}:${localSeconds}`;
+}
+
+function startClock() {
+    updateClock();
+    clearInterval(clockInterval);
+    clockInterval = setInterval(updateClock, 1000);
+}
+
+function setTimezoneOffset(offset) {
+    timezoneOffset = offset;
+    startClock();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    startClock();
+});
+
+
+
+// Function to display current weather
+function displayCurrentWeather(cityName, data) {
+    setTimezoneOffset(data.timezone);
+    const weatherDisplay = document.getElementById('weatherDisplay');
+
+    // Check if the necessary data is available
+    if (!data || !data.weather || !data.main) {
+        weatherDisplay.innerHTML = `<p>${translate('errorFetchingData')}</p>`;
+        return;
+    }
+    const iconCode = data.weather[0]?.icon || '';
+    const iconUrl = iconCode ? `https://openweathermap.org/img/wn/${iconCode}@2x.png` : '';
+    const windSpeed = windSpeedUnit === 'metric' ? 'm/s' : 'mph';
+    const temperatureSymbol = temperatureUnit === 'metric' ? '°C' : '°F';
+    const pressureUnit = temperatureUnit === 'metric' ? 'hPa' : 'inHg';
+    const pressureValue = temperatureUnit === 'metric'
+        ? data.main.pressure
+        : (data.main.pressure / 33.8639).toFixed(2); // Convert pressure to inHg if imperial
+
+    // Helper function to determine wind direction
+    const getWindDirection = (deg) => {
+        const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+        return directions[Math.round(deg / 45) % 8];
+    };
+
+    // Extract additional data
+    const feelsLike = data.main?.feels_like || 'N/A';
+    const cloudiness = data.clouds?.all || 'N/A';
+    const windDirection = data.wind?.deg !== undefined ? getWindDirection(data.wind.deg) : 'N/A';
+    const sunrise = data.sys?.sunrise ? new Date(data.sys.sunrise * 1000).toLocaleTimeString() : 'N/A';
+    const sunset = data.sys?.sunset ? new Date(data.sys.sunset * 1000).toLocaleTimeString() : 'N/A';
+
+    // Update the weatherDisplay container
+    weatherDisplay.innerHTML = `
+    <h3>${translate('currentWeather')} ${cityName}</h3>
+    <p class="weather-details">
+        <span class="top-display">
+            <span class="weather-icon">
+                <img src="${iconUrl}" alt="Weather icon" />
+            </span>
+            <span class="temperature">${data.main.temp}${temperatureSymbol}</span>
+        </span>
+    </p>
+    <p class="weather-details">${translate('feelsLike')}: ${feelsLike}${temperatureSymbol}</p>
+    <p class="weather-details">${translate('condition')}: ${data.weather[0]?.description || 'N/A'}</p>
+    <p class="weather-details">${translate('humidity')}: ${data.main?.humidity}%</p>
+    <p class="weather-details">${translate('pressure')}: ${pressureValue} ${pressureUnit}</p>
+    <p class="weather-details">${translate('cloudiness')}: ${cloudiness}%</p>
+    <p class="weather-details">${translate('windSpeed')}: ${data.wind?.speed} ${windSpeed}</p>
+    <p class="weather-details">${translate('windDirection')}: ${windDirection}</p>
+    <p class="weather-details">${translate('sunrise')}: ${sunrise}</p>
+    <p class="weather-details">${translate('sunset')}: ${sunset}</p>
+    <p class="weather-details">${translate('localTime')}: ${cityTime}</p>
+`;
+}
+
+// Toggle the favorites list visibility
+function toggleListOfFavourites() {
+    const listDiv = document.getElementById("listOfFavourites");
+    listDiv.style.display = listDiv.style.display === 'none' ? 'block' : 'none';
+
+    // Close the list if clicked outside
+    document.addEventListener('click', (event) => {
+        if (!event.target.closest('#listOfFavourites') && event.target.textContent !== "Favourites") {
+            listDiv.style.display = "none";
+        }
+    }, { once: true });
+}
+
+// Add the current city to the favorites list
+async function addCurrentCityToFavourites() {
+    if (typeof cityName !== 'undefined' && cityName && !favourites.includes(cityName)) {
+        favourites.push(cityName);
+        localStorage.setItem("favourites", JSON.stringify(favourites));
+        updateFavouritesList();
+        showNotification(`${cityName} has been added to favourites`);
+    } else if (!cityName) {
+        showNotification("City name is not defined. Please select a city first.");
+    } else {
+        showNotification(`${cityName} is already in favourites`);
+    }
+}
+
+// Update the favorites list display
+async function updateFavouritesList() {
+    const listDiv = document.getElementById("listOfFavourites");
+    listDiv.innerHTML = "";
+
+    favourites.forEach((city) => {
+        const cityElement = document.createElement("div");
+        cityElement.textContent = city;
+
+        // Add click event listener for fetching weather
+        cityElement.addEventListener('click', () => getWeather(city));
+
+        // Create the remove button
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "Remove";
+
+        // Add click event listener for removing the city directly
+        removeButton.addEventListener('click', (event) => {
+            event.stopPropagation(); // Prevent triggering cityElement click
+            favourites = favourites.filter(c => c !== city);
+            localStorage.setItem("favourites", JSON.stringify(favourites));
+            updateFavouritesList(); // Refresh the list display
+        });
+
+        // Add city and remove button to the list
+        cityElement.appendChild(removeButton);
+        listDiv.appendChild(cityElement);
+    });
+}
+
+
+// Initialize event listeners when DOM is fully loaded
+document.addEventListener('DOMContentLoaded', function () {
+    // Event listener for the help toggle
+    const helpButton = document.getElementById("helpButton");
+    if (helpButton) {
+        helpButton.addEventListener("click", toggleHelp);
+    }
+
+    // Event listener for the about toggle
+    const aboutButton = document.getElementById("aboutButton");
+    if (aboutButton) {
+        aboutButton.addEventListener("click", toggleAbout);
+    }
+
+    // Event listener for the contact details toggle
+    const contactButton = document.getElementById("contactButton");
+    if (contactButton) {
+        contactButton.addEventListener("click", toggleContactDetails);
+    }
+
+    // Event listener for the language toggle
+    const languageButton = document.getElementById("languageButton");
+    if (languageButton) {
+        languageButton.addEventListener("click", toggleLanguages);
+    }
+
+    // Event listener for clicking anywhere outside to close the open sections
+    window.addEventListener("click", function (event) {
+        const helpInfo = document.getElementById("helpInfo");
+        const aboutInfo = document.getElementById("aboutInfo");
+        const contactInfo = document.getElementById("contactInfo");
+        const languageDropdown = document.getElementById("languageDropdown");
+
+        // Check if the click was outside of any open section and close them
+        if (!event.target.closest('#helpButton') && helpInfo.style.display === "block") {
+            helpInfo.style.display = "none";
+        }
+        if (!event.target.closest('#aboutButton') && aboutInfo.style.display === "block") {
+            aboutInfo.style.display = "none";
+        }
+        if (!event.target.closest('#contactButton') && contactInfo.style.display === "block") {
+            contactInfo.style.display = "none";
+        }
+        if (!event.target.closest('#languageButton') && languageDropdown.style.display === "block") {
+            languageDropdown.style.display = "none";
+        }
+    });
+});
+
+// Toggle help section visibility
+function toggleHelp(event) {
+    let helpInfo = document.getElementById("helpInfo");
+    helpInfo.style.display = (helpInfo.style.display === "none") ? "block" : "none";
+    event.stopPropagation(); // Prevent the click event from bubbling up to the window
+}
+
+// Toggle about section visibility
+function toggleAbout(event) {
+    const aboutInfo = document.getElementById("aboutInfo");
+    aboutInfo.style.display = (aboutInfo.style.display === "none") ? "block" : "none";
+    event.stopPropagation(); // Prevent the click event from bubbling up to the window
+}
+
+// Toggle contact details visibility
+function toggleContactDetails(event) {
+    const contactInfo = document.getElementById("contactInfo");
+    contactInfo.style.display = (contactInfo.style.display === "none") ? "block" : "none";
+    event.stopPropagation(); // Prevent the click event from bubbling up to the window
+}
+
+// Toggle language dropdown visibility
+function toggleLanguages(event) {
+    const languageDropdown = document.getElementById("languageDropdown");
+    const isVisible = languageDropdown.style.display === "block";
+    languageDropdown.style.display = isVisible ? "none" : "block";
+    event.stopPropagation(); // Prevent the click event from bubbling up to the window
+}
+
+// Function to update the background based on weather condition
+function updateContainerBackground(weatherCondition) {
+    const container = document.getElementById('container');
+    
+    // A mapping of weather conditions to container classes
+    const weatherClassMapping = {
+        'Clear': 'sunny',
+        'Rain': 'rainy',
+        'Snow': 'snowy',
+        'Thunderstorm': 'thunderstorm',
+        'Clouds': 'cloudy'
+    };
+    
+    // Default class if the weather condition is not in the mapping
+    const classToAdd = weatherClassMapping[weatherCondition] || 'default';
+    
+    // Remove all weather-related classes
+    container.className = container.className.replace(/\s*(sunny|rainy|snowy|thunderstorm|cloudy|default)\s*/g, ' ').trim();
+
+    // Add the appropriate class for the weather condition
+    container.classList.add(classToAdd);
+}
+
+// Select the loader element once and reuse it
+const loaderElement = document.querySelector('.loader');
+
+// Function to show the loader
+function showLoader() {
+    if (loaderElement) {
+        loaderElement.style.display = 'flex';
+    }
+}
+
+// Function to hide the loader
+function hideLoader() {
+    if (loaderElement) {
+        loaderElement.style.display = 'none';
+    }
+}
+
+// Set the selected language and save it in localStorage
+function setLanguage(selectedLanguage) {
+    // Update the language variable
+    language = selectedLanguage;
+    localStorage.setItem('language', language);
+
+    // Update the displayed weather in the selected language
+    getWeather(cityName || defaultLocation);
+
+    // Hide the language dropdown after selection
+    const languageDropdown = document.getElementById("languageDropdown");
+    languageDropdown.style.display = "none";
+}
+
+// Attach click event listeners to language options
+document.querySelectorAll('.language-option').forEach(option => {
+    option.addEventListener('click', function() {
+        const selectedLanguage = this.getAttribute('data-lang');
+        setLanguage(selectedLanguage);
+        showNotification(`Language switched to ${selectedLanguage.toUpperCase()}`);
+    });
+});
+
+// List of cities (this can be expanded or fetched from a server in the future)
+const cities = [
+   'Chikankata', 'Chirundu', 'Choma', 'Gwembe', 'Itezhi-Tezhi', 
+    'Kalomo', 'Kazungula', 'Livingstone', 'Mazabuka', 'Monze', 
+    'Namwala', 'Pemba', 'Siavonga', 'Sinazongwe', 'Maamba', 'Sinazeze', 'Zimba'
+];
+
+// Function to render the list of cities
+function renderCities() {
+    const citiesList = document.getElementById('citiesList');
+    citiesList.innerHTML = ''; // Clear existing list (if any)
+
+    cities.forEach(city => {
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `
+            <span class="city-name">${city}</span>
+            <button class="set-default-btn">Set as Default</button>
+        `;
+        citiesList.appendChild(listItem);
+    });
+}
+
+// Event delegation: Adding event listeners to dynamically generated elements
+document.getElementById('citiesDropdown').addEventListener('click', function(event) {
+    // Check if the clicked element is a city name or 'Set as Default' button
+    if (event.target.classList.contains('city-name')) {
+        const cityName = event.target.textContent;
+        getWeather(cityName); // Fetch weather for the selected city
+    } else if (event.target.classList.contains('set-default-btn')) {
+        const cityName = event.target.previousElementSibling.textContent;
+        setDefaultLocation(cityName); // Set selected city as default
+    }
+});
+
+// General function to show any notification message
+function showNotification(message) {
+    const messageElement = document.getElementById('notificationMessage');
+    const notificationContainer = document.getElementById('notificationContainer');
+
+    messageElement.textContent = message;  // Set the message text
+    notificationContainer.style.display = 'block';  // Show the notification
+
+    // Hide the notification after 3 seconds
+    setTimeout(() => {
+        notificationContainer.style.display = 'none';
+    }, 3000);  // The notification will disappear after 3 seconds
+}

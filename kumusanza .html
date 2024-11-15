@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kumusanza</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Kumusanza.css">
+    <script src="Kumusanza.js" defer></script>
+</head>
+<body>
+    <div class="headbox">
+    <!-- Hamburger Menu -->
+    <div class="dropdown-menu">
+        <span class="menu-icon" id="menu-icon">&#9776;</span>
+        <div id="menu" class="menu-content">
+            <a href="#" id="homeButton">Home</a>
+           <a href="#" id="favourites-list">Favourites</a>
+            <div id="listOfFavourites"></div>
+            <a href="#" id="unitsLink">Change Units</a>
+            <div id="unitsDropdown" class="unitsDropdown">
+                <ul>
+                    <li>
+                        <button id="imperialBtn">Imperial</button>
+            </li>
+                    <li>
+    <button id="metricBtn">Metric</button> 
+                    </li>
+                </ul>
+            </div>
+            
+           <a href="#" id="languageButton">Languages</a>
+<div id="languageDropdown" class="language-menu">
+    <ul>
+        <li class="language-option" data-lang="en">English</li>
+        <li class="language-option" data-lang="fr">French</li>
+    </ul>
+</div>
+            <a href="#" id="citiesLink">Cities</a>
+            <!-- Cities dropdown -->
+           <div id="citiesDropdown" class="cities-menu">
+    <ul id="citiesList"></ul>
+</div>
+        </div>
+    </div>
+<h2>Southern Zambia Weather Hub</h2>
+    </div>
+    <!-- Main Content Container -->
+    <div id="container" class="container">
+        <div class="lining">
+            <span class="align">
+                <span class="subtitle">Kumusanza</span>
+        <div id="time" class="time"></div>
+            </span>
+        </div>
+
+        <!-- Search Box for City Weather -->
+        <div class="search-box">
+            <input type="text" id="cityInput" placeholder="Enter a city name">
+            <button class="search-button" onclick="fetchCityWeather()">Get Weather</button>
+        </div>
+        <div class="loader">
+    <div></div>
+    <div></div>
+    <div></div>
+</div>
+
+        <!-- Display for Weather Information -->
+        <div id="weatherDisplay" class="weather-display">
+            <h3>Current Weather</h3>
+            <p class="weather-details">Weather details will appear here once a city is selected or geolocation is used.</p>
+            
+        </div>
+       
+
+        <!-- Display for weekly Forecast -->
+        <div id="forecastDisplay" class="forecast-display">
+            <h3> 5 Days Forecast (3-hour Intervals)</h3>
+            <div class="forecast-scroll">
+                <!-- Forecast items will be injected here dynamically -->
+            </div>
+        </div>
+    </div>
+    <button class="Fav" id="addToFavouritesButton">Add to Favorites</button>
+    <div id="notificationContainer" class="notification" style="display: none;">
+    <span id="notificationMessage"></span>
+</div>
+    <div class="UnderCredits">
+        
+       <button id="aboutButton" class="link">About Kumusanza</button>
+        <button id="helpButton" class="link">Help</button>
+        <button id="contactButton" class="link">Contact Us</button>
+    </div>
+       
+     <div id="aboutInfo">
+        <h3>Welcome to Kumusanza</h3>
+        <p>Kumusanza is a weather information platform providing accurate and reliable forecasts for Southern Province, Zambia, and beyond. As a school project initiated by Chisanga Mwaba, a Bachelor of Science student in Electrical and Electronics Engineering, this website showcases an innovative application of web development skills to real-world problems.</p>
+        
+        <h3>Mission</h3>
+        <p>Our mission is to deliver timely, precise, and user-friendly weather updates, empowering individuals, farmers, travelers, and decision-makers to plan and make informed decisions.</p>
+        
+        <h3>Vision</h3>
+        <p>We envision Kumusanza as a trusted and comprehensive weather resource, expanding its coverage to cater to global weather needs while maintaining its grassroots focus on Southern Province, Zambia.</p>
+        
+        <h3>About the Founder</h3>
+        <p>Chisanga Mwaba is an undergraduate student pursuing a Bachelor of Science in Electrical and Electronics Engineering. With a keen interest in web development and community development, Chisanga created Kumusanza to demonstrate the potential of technology in addressing everyday challenges.</p>
+        
+        <h3>Technical Details</h3>
+        <ul>
+            <li>HTML5 (Hypertext Markup Language) for structuring and content presentation</li>
+            <li>CSS3 (Cascading Style Sheets) for visually appealing design and layout</li>
+            <li>JavaScript for dynamic client-side functionality</li>
+            <li>OpenWeatherMap API for reliable and accurate weather data</li>
+        </ul>
+        
+        <h3>Features and Goals</h3>
+        <ul>
+            <li>Provide accurate and up-to-date weather forecasts</li>
+            <li>Offer customizable weather alerts and notifications</li>
+            <li>Include weather-related news and educational resources</li>
+            <li>Expand coverage to other regions and countries</li>
+            <li>Foster community engagement through feedback and suggestions</li>
+        </ul>
+        
+        <p>Thank you for visiting Kumusanza. For contact information, please click<button id="ContactDetails" onclick="toggleContactDetails()">Contact Us</button></p>
+    </div>
+    
+     <div id="helpInfo">
+    <h3>How to Use Kumusanza</h3>
+    
+    <h4>Getting Started</h4>
+    <p>Welcome to Kumusanza! Here, you can view real-time weather updates and forecasts for Southern Province, Zambia, and other regions. Simply enter a city name in the search box to get started.</p>
+
+    <h4>Main Features</h4>
+    <ul>
+        <li><strong>Search for Weather</strong>: Enter a city name in the search box and click "Get Weather" to view the current weather conditions.</li>
+        <li><strong>Weekly Forecast</strong>: Scroll through the “Weekly Forecast” section to see upcoming weather predictions, updated every 3 hours.</li>
+        <li><strong>Favourites</strong>: Click "Add to Favorites" to save a city for easy access. View your favorite cities under "Favourites" in the menu.</li>
+        <li><strong>Change Units</strong>: Use "Change Units" in the menu to toggle between Celsius and Fahrenheit.</li>
+    </ul>
+
+    <h4>Menu Navigation</h4>
+    <p>Click on the menu icon (☰) to access additional options:</p>
+    <ul>
+        <li><strong>Home</strong>: Return to the main weather display.</li>
+        <li><strong>Favourites</strong>: Quickly view weather for your favorite cities.</li>
+        <li><strong>Change Units</strong>: Switch between Imperial (Fahrenheit) and Metric (Celsius) units.</li>
+        <li><strong>Cities</strong>: Browse popular cities in Southern Province. Click on a city name to view its weather or set it as your default location.</li>
+    </ul>
+
+    <h4>Frequently Asked Questions</h4>
+    <p><strong>How often is the weather updated?</strong> Weather data is updated hourly for accuracy.</p>
+    <p><strong>Can I set a default city?</strong> Yes! Under “Cities” in the menu, select “Set as Default” for any city.</p>
+    <p><strong>Where does the weather data come from?</strong> We use the OpenWeatherMap API, a reliable global weather data source.</p>
+
+    <h4>Need More Help?</h4>
+    <p>If you have additional questions, feel free to contact us via the “Contact Us” button or reach out to Chisanga Mwaba directly at <strong>+260962802464</strong>.</p>
+</div>
+    
+    <div id="contactInfo">  <h3>Contact Details</h3>
+        <p><strong>Name:</strong> Chisanga Mwaba</p>
+        <p><strong>Phone Numbers:</strong> +260962802464 / +260978942242</p>
+        <p><strong>Email:</strong> Chisanga_Mwaba@yahoo.com</p>
+        <p><strong>WhatsApp:</strong> <a href="https://wa.me/+260962802464" target="_blank">Click here to chat</a></p>
+    </div>
+    
+    <li><a href="http://www.icuzambia.net">ICU Zambia</a></li>
+<li><a href="https://www.zrdc.org">ZRDC</a></li>
+    
+    <footer>   
+ <td><span class="copyright">Maamba.
+     <p>All Rights Reserved.
+     </p>
+     <p>Designed and 
+Maintained 
+         By Mwaba Chisanga, </p><p>SIN: 2304288851
+     </p></td>
+ </footer>
+</body>
+</html>
