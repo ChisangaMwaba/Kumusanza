@@ -556,25 +556,25 @@ function displayCurrentWeather(cityName, data) {
     // Update the weatherDisplay container
     weatherDisplay.innerHTML = `
     <h3>${translate('currentWeather')} ${cityName}</h3>
-    <p class="weather-details">
+    <div class="weather-details">
         <span class="top-display">
             <span class="weather-icon">
                 <img src="${iconUrl}" alt="Weather icon" />
             </span>
             <span class="temperature">${data.main.temp}${temperatureSymbol}</span>
         </span>
-    </p>
-    <p class="weather-details">${translate('feelsLike')}: ${feelsLike}${temperatureSymbol}</p>
-    <p class="weather-details">${translate('condition')}: ${data.weather[0]?.description || 'N/A'}</p>
-    <p class="weather-details">${translate('humidity')}: ${data.main?.humidity}%</p>
-    <p class="weather-details">${translate('pressure')}: ${pressureValue} ${pressureUnit}</p>
-    <p class="weather-details">${translate('cloudiness')}: ${cloudiness}%</p>
-    <p class="weather-details">${translate('windSpeed')}: ${data.wind?.speed} ${windSpeed}</p>
-    <p class="weather-details">${translate('windDirection')}: ${windDirection}</p>
-    <p class="weather-details">${translate('sunrise')}: ${sunrise}</p>
-    <p class="weather-details">${translate('sunset')}: ${sunset}</p>
-    <p class="weather-details">${translate('localTime')}: ${cityTime}</p>
-`;
+    </div>
+    <div class="weather-details"><div class = "subject">${translate('feelsLike')}:</div> <div class = "object">${feelsLike}${temperatureSymbol}</div></div>
+    <div class="weather-details"><div class = "subject">${translate('condition')}:</div> <div class = "object">${data.weather[0]?.description || 'N/A'}</div></div>
+    <div class="weather-details"><div class = "subject">${translate('humidity')}:</div> <div class = "object">${data.main?.humidity}%</div></div>
+    <div class="weather-details"><div class = "subject">${translate('pressure')}:</div> <div class = "object">${pressureValue} ${pressureUnit}</div></div>
+    <div class="weather-details"><div class = "subject">${translate('cloudiness')}:</div> <div class = "object">${cloudiness}%</div></div>
+    <div class="weather-details"><div class = "subject">${translate('windSpeed')}:</div> <div class = "object">${data.wind?.speed} ${windSpeed}</div></div>
+    <div class="weather-details"><div class = "subject">${translate('windDirection')}:</div> <div class = "object">${windDirection}</div></div>
+    <div class="weather-details"><div class = "subject">${translate('sunrise')}:</div> <div class = "object">${sunrise}</div></div>
+    <div class="weather-details"><div class = "subject">${translate('sunset')}:</div> <div class = "object">${sunset}</div></div>
+    <div class="weather-details"><div class = "subject">${translate('localTime')}:</div> <div class = "object">${cityTime}</div></div>
+    `;
 }
 
 // Toggle the favorites list visibility
@@ -634,69 +634,6 @@ async function updateFavouritesList() {
     });
 }
 
-
-// Initialize event listeners when DOM is fully loaded
-document.addEventListener('DOMContentLoaded', function () {
-    // Event listener for the help toggle
-    const helpButton = document.getElementById("helpButton");
-    if (helpButton) {
-        helpButton.addEventListener("click", toggleHelp);
-    }
-
-    // Event listener for the about toggle
-    const aboutButton = document.getElementById("aboutButton");
-    if (aboutButton) {
-        aboutButton.addEventListener("click", toggleAbout);
-    }
-
-    // Event listener for the contact details toggle
-    const contactButton = document.getElementById("contactButton");
-    if (contactButton) {
-        contactButton.addEventListener("click", toggleContactDetails);
-    }
-
-    // Event listener for the language toggle
-    const languageButton = document.getElementById("languageButton");
-    if (languageButton) {
-        languageButton.addEventListener("click", toggleLanguages);
-    }
-
-    // Event listener for clicking anywhere outside to close the open sections
-    window.addEventListener("click", function (event) {
-        const helpInfo = document.getElementById("helpInfo");
-        const aboutInfo = document.getElementById("aboutInfo");
-        const contactInfo = document.getElementById("contactInfo");
-        const languageDropdown = document.getElementById("languageDropdown");
-
-        // Check if the click was outside of any open section and close them
-        if (!event.target.closest('#helpButton') && helpInfo.style.display === "block") {
-            helpInfo.style.display = "none";
-        }
-        if (!event.target.closest('#aboutButton') && aboutInfo.style.display === "block") {
-            aboutInfo.style.display = "none";
-        }
-        if (!event.target.closest('#contactButton') && contactInfo.style.display === "block") {
-            contactInfo.style.display = "none";
-        }
-        if (!event.target.closest('#languageButton') && languageDropdown.style.display === "block") {
-            languageDropdown.style.display = "none";
-        }
-    });
-});
-
-// Toggle help section visibility
-function toggleHelp(event) {
-    let helpInfo = document.getElementById("helpInfo");
-    helpInfo.style.display = (helpInfo.style.display === "none") ? "block" : "none";
-    event.stopPropagation(); // Prevent the click event from bubbling up to the window
-}
-
-// Toggle about section visibility
-function toggleAbout(event) {
-    const aboutInfo = document.getElementById("aboutInfo");
-    aboutInfo.style.display = (aboutInfo.style.display === "none") ? "block" : "none";
-    event.stopPropagation(); // Prevent the click event from bubbling up to the window
-}
 
 // Initialize event listeners when DOM is fully loaded
 document.addEventListener('DOMContentLoaded', function () {
