@@ -1,4 +1,5 @@
 #weatherDisplay {
+    padding-top: 20px;
     padding-bottom: 20px;
     width: 95%;
     margin-bottom: 30px;
@@ -35,25 +36,25 @@
 }
 
 .weather-details {
-    
     display: flex;
     justify-content: space-between;
     align-items: center;
     max-width: 300px; /* Set a max-width to control the container size */
     width: 100%;
-    padding: 0 10px; /* Optional padding for spacing */
+    padding: 0 15px; 
     margin: 0 auto; /* Centers the container horizontally */
     font-family: 'Open Sans';
     font-weight: bold;
+    margin-bottom: 5px;
 }
 
 .subject {
-    flex: 0 0 100px; /* Fixed width for consistent alignment */
+    flex: 0 0 120px; /* Fixed width for consistent alignment */
     text-align: left;
 }
 
 .object {
-    flex: 0 0 80px; /* Fixed width for consistent alignment */
+    flex: 0 0 120px; /* Fixed width for consistent alignment */
     text-align: right;
 }
 
