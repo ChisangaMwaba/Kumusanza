@@ -698,19 +698,93 @@ function toggleAbout(event) {
     event.stopPropagation(); // Prevent the click event from bubbling up to the window
 }
 
+// Initialize event listeners when DOM is fully loaded
+document.addEventListener('DOMContentLoaded', function () {
+    // Event listener for the help toggle
+    const helpButton = document.getElementById("helpButton");
+    if (helpButton) {
+        helpButton.addEventListener("click", toggleHelp);
+    }
+
+    // Event listener for the about toggle
+    const aboutButton = document.getElementById("aboutButton");
+    if (aboutButton) {
+        aboutButton.addEventListener("click", toggleAbout);
+    }
+
+    // Event listener for the contact details toggle
+    const contactButton = document.getElementById("contactButton");
+    if (contactButton) {
+        contactButton.addEventListener("click", toggleContactDetails);
+    }
+
+    // Event listener for the language toggle
+    const languageButton = document.getElementById("languageButton");
+    if (languageButton) {
+        languageButton.addEventListener("click", toggleLanguages);
+    }
+
+    // Event listener for clicking anywhere outside to close the open sections
+    window.addEventListener("click", function (event) {
+        const helpInfo = document.getElementById("helpInfo");
+        const aboutInfo = document.getElementById("aboutInfo");
+        const contactInfo = document.getElementById("contactInfo");
+        const languageDropdown = document.getElementById("languageDropdown");
+
+        // Check if the click was outside of any open section and close them
+        if (!event.target.closest('#helpButton') && helpInfo.style.display === "block") {
+            helpInfo.style.display = "none";
+        }
+        if (!event.target.closest('#aboutButton') && aboutInfo.style.display === "block") {
+            aboutInfo.style.display = "none";
+        }
+        if (!event.target.closest('#contactButton') && contactInfo.style.display === "block") {
+            contactInfo.style.display = "none";
+        }
+        if (!event.target.closest('#languageButton') && languageDropdown.style.display === "block") {
+            languageDropdown.style.display = "none";
+        }
+    });
+});
+
+// Helper function to close all sections
+function closeAllSections() {
+    document.getElementById("helpInfo").style.display = "none";
+    document.getElementById("aboutInfo").style.display = "none";
+    document.getElementById("contactInfo").style.display = "none";
+    document.getElementById("languageDropdown").style.display = "none";
+}
+
+// Toggle help section visibility
+function toggleHelp(event) {
+    closeAllSections();
+    const helpInfo = document.getElementById("helpInfo");
+    helpInfo.style.display = (helpInfo.style.display === "none") ? "block" : "none";
+    event.stopPropagation(); // Prevent the click event from bubbling up to the window
+}
+
+// Toggle about section visibility
+function toggleAbout(event) {
+    closeAllSections();
+    const aboutInfo = document.getElementById("aboutInfo");
+    aboutInfo.style.display = (aboutInfo.style.display === "none") ? "block" : "none";
+    event.stopPropagation();
+}
+
 // Toggle contact details visibility
 function toggleContactDetails(event) {
+    closeAllSections();
     const contactInfo = document.getElementById("contactInfo");
     contactInfo.style.display = (contactInfo.style.display === "none") ? "block" : "none";
-    event.stopPropagation(); // Prevent the click event from bubbling up to the window
+    event.stopPropagation();
 }
 
 // Toggle language dropdown visibility
 function toggleLanguages(event) {
+    closeAllSections();
     const languageDropdown = document.getElementById("languageDropdown");
-    const isVisible = languageDropdown.style.display === "block";
-    languageDropdown.style.display = isVisible ? "none" : "block";
-    event.stopPropagation(); // Prevent the click event from bubbling up to the window
+    languageDropdown.style.display = (languageDropdown.style.display === "none") ? "block" : "none";
+    event.stopPropagation();
 }
 
 // Function to update the background based on weather condition
