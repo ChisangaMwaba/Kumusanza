@@ -694,33 +694,45 @@ function closeAllSections() {
 
 // Toggle help section visibility
 function toggleHelp(event) {
-    closeAllSections();
     const helpInfo = document.getElementById("helpInfo");
-    helpInfo.style.display = (helpInfo.style.display === "none") ? "block" : "none";
+    if (helpInfo.style.display === "block"){helpInfo.style.display = "none"} else{closeAllSections();
+helpInfo.style.display="block";}
     event.stopPropagation(); // Prevent the click event from bubbling up to the window
 }
 
 // Toggle about section visibility
 function toggleAbout(event) {
-    closeAllSections();
     const aboutInfo = document.getElementById("aboutInfo");
-    aboutInfo.style.display = (aboutInfo.style.display === "none") ? "block" : "none";
+   if( aboutInfo.style.display === "block"){aboutInfo.style.display = "none"}else{ closeAllSections();
+       aboutInfo.style.display = "block";}
     event.stopPropagation();
 }
 
-// Toggle contact details visibility
 function toggleContactDetails(event) {
-    closeAllSections();
     const contactInfo = document.getElementById("contactInfo");
-    contactInfo.style.display = (contactInfo.style.display === "none") ? "block" : "none";
+    
+    // Check if the dropdown is already visible
+    if (contactInfo.style.display === "block") {
+        contactInfo.style.display = "none";
+    } else {
+        closeAllSections(); // Only close other sections if the dropdown is not open
+        contactInfo.style.display = "block";
+    }
+
     event.stopPropagation();
 }
 
-// Toggle language dropdown visibility
 function toggleLanguages(event) {
-    closeAllSections();
     const languageDropdown = document.getElementById("languageDropdown");
-    languageDropdown.style.display = (languageDropdown.style.display === "none") ? "block" : "none";
+
+    // Check if the dropdown is already visible
+    if (languageDropdown.style.display === "block") {
+        languageDropdown.style.display = "none";
+    } else {
+        closeAllSections(); // Only close other sections if the dropdown is not open
+        languageDropdown.style.display = "block";
+    }
+
     event.stopPropagation();
 }
 
