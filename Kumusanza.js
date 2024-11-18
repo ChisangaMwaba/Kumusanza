@@ -7,11 +7,10 @@ const unitsConfig = {
     temperature: localStorage.getItem('temperatureUnit') || 'metric',
     windSpeed: localStorage.getItem('windSpeedUnit') || 'metric',
 };
-
+let cityName = '';
 let defaultLocation = localStorage.getItem('defaultLocation') || 'Livingstone';
 let language = localStorage.getItem('language') || 'en';
 let favourites = JSON.parse(localStorage.getItem('favourites')) || [];
-let cityName = '';
 // Initialize the application
 document.addEventListener('DOMContentLoaded', init);
 
@@ -153,28 +152,29 @@ async function getWeather(cityName) {
         // Check for network connection
         if (!navigator.onLine) {
             showNotification('No network connection. Please check your Internet');
-            hideLoader(); // Hide loader if no network connection
-            return; // Exit function if no internet
+            hideLoader();
+            return;
         }
 
         const response = await fetch(cityWeatherUrl);
 
         if (!response.ok) {
             showNotification(`Error fetching weather data for ${cityName}`);
-            return; // Exit if the response is not okay
+            hideLoader();
+            return;
         }
 
         const data = await response.json();
 
+        // Set the global cityName first
+        cityName = data.name;
+
         // Get the main weather condition (e.g., 'Clear', 'Rain', 'Clouds')
         const weatherCondition = data.weather[0].main;
-        updateContainerBackground(weatherCondition); // Update the container background
+        updateContainerBackground(weatherCondition);
 
         // Display the current weather
         displayCurrentWeather(cityName, data);
-
-        // Set cityName to reflect the city from the weather data
-        cityName = data.name;
 
         // Proceed to fetch the 5-day forecast if coordinates are available
         if (data.coord) {
@@ -187,10 +187,9 @@ async function getWeather(cityName) {
         console.error('Error:', error);
         showNotification('Unable to fetch weather data. Please try again later.');
     } finally {
-        hideLoader(); // Hide loader after everything is done
+        hideLoader();
     }
 }
-
 // Fetch 5-day forecast in 3-hour intervals using city coordinates (lat, lon)
 async function fetch5DayForecast(lat, lon) {
     const forecastApiUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${weatherApiKey}&units=${temperatureUnit}&lang=${language}`;
@@ -198,13 +197,16 @@ async function fetch5DayForecast(lat, lon) {
     try {
         const response = await fetch(forecastApiUrl);
         if (!response.ok) {
-            throw new Error('Error fetching 5-day forecast data');
+            throw new Error('Error fetching forecast data');
         }
 
         const forecastData = await response.json();
         const dailySummaries = summarizeDailyForecasts(forecastData.list);
         display5DayForecast(dailySummaries);
 
+        const temperatures = extractTemperatureData(forecastData);
+        displayWeatherChart(temperatures);
+        
     } catch (error) {
         console.error('Error:', error);
         showNotification('Unable to fetch forecast data. Please try again later.');
@@ -284,7 +286,223 @@ function display5DayForecast(dailySummaries) {
     });
 }
 
+// Extract temperature data for the chart
+function extractTemperatureData(forecastData) {
+    const temperatures = {
+        labels: [], // Time labels (dates)
+        data: [] // Temperature data
+    };
 
+    forecastData.list.forEach(forecast => {
+        const forecastDate = new Date(forecast.dt * 1000);
+        const date = forecastDate.toLocaleDateString();
+        const temp = forecast.main.temp;
+        
+        temperatures.labels.push(date);
+        temperatures.data.push(temp);
+    });
+
+    return temperatures;
+}
+
+// Fetch 5-day forecast in 3-hour intervals using city coordinates (lat, lon)
+async function fetch5DayForecast(lat, lon) {
+    const forecastApiUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${weatherApiKey}&units=${temperatureUnit}&lang=${language}`;
+
+    try {
+        const response = await fetch(forecastApiUrl);
+        if (!response.ok) {
+            throw new Error('Error fetching forecast data');
+        }
+
+        const forecastData = await response.json();
+        const dailySummaries = summarizeDailyForecasts(forecastData.list);
+        display5DayForecast(dailySummaries);
+
+        const temperatures = extractTemperatureData(forecastData);
+        displayWeatherChart(temperatures);
+        
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('Unable to fetch forecast data. Please try again later.');
+    }
+}
+
+// Summarize hourly forecasts into daily summaries with hourly details
+function summarizeDailyForecasts(forecastList) {
+    const dailyData = {};
+
+    forecastList.forEach(forecast => {
+        const forecastDate = new Date(forecast.dt * 1000);
+        const date = forecastDate.toLocaleDateString();
+        const time = forecastDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        if (!dailyData[date]) {
+            dailyData[date] = {
+                hours: [],
+                tempMax: forecast.main.temp,
+                tempMin: forecast.main.temp,
+                weatherDescription: forecast.weather[0].description,
+                count: 0
+            };
+        }
+
+        dailyData[date].hours.push({
+            time: time,
+            temp: forecast.main.temp,
+            weatherDescription: forecast.weather[0].description,
+            icon: forecast.weather[0].icon
+        });
+
+        // Update max and min temperature for the day
+        dailyData[date].tempMax = Math.max(dailyData[date].tempMax, forecast.main.temp);
+        dailyData[date].tempMin = Math.min(dailyData[date].tempMin, forecast.main.temp);
+        dailyData[date].count++;
+    });
+
+    return dailyData;
+}
+
+// Function to display the 5-day forecast with hourly scrolling for each day
+function display5DayForecast(dailySummaries) {
+    const forecastDisplay = document.getElementById('forecastDisplay');
+    forecastDisplay.innerHTML = `<h3>${translate('fiveDayForecast')}</h3>`;
+
+    Object.keys(dailySummaries).forEach(date => {
+        const dailyForecast = dailySummaries[date];
+        const dayContainer = document.createElement('div');
+        dayContainer.classList.add('day-container');
+
+        const dayHeader = document.createElement('h4');
+        dayHeader.textContent = date;
+        dayContainer.appendChild(dayHeader);
+
+        const hourlyForecast = document.createElement('div');
+        hourlyForecast.classList.add('hourly-forecast');
+
+        dailyForecast.hours.forEach(hour => {
+            const forecastItem = document.createElement('div');
+            forecastItem.classList.add('forecast-item');
+            
+            forecastItem.innerHTML = `
+    <p><strong>${hour.time}</strong></p>
+   <span class = "hour-top"> <span class="forecast-icon">
+        <img src="https://openweathermap.org/img/wn/${hour.icon}@2x.png" alt="${hour.weatherDescription}" />
+    </span><span class = "hour-temp"> ${hour.temp}°C</span></span>
+    <p>${hour.weatherDescription}</p>
+    
+`;
+
+            hourlyForecast.appendChild(forecastItem);
+        });
+
+        dayContainer.appendChild(hourlyForecast);
+        forecastDisplay.appendChild(dayContainer);
+    });
+}
+
+// Extract temperature data for the chart
+function extractTemperatureData(forecastData) {
+    const temperatures = {
+        labels: [], // Time labels (dates)
+        data: [] // Temperature data
+    };
+
+    forecastData.list.forEach(forecast => {
+        const forecastDate = new Date(forecast.dt * 1000);
+        const date = forecastDate.toLocaleDateString();
+        const temp = forecast.main.temp;
+        
+        temperatures.labels.push(date);
+        temperatures.data.push(temp);
+    });
+
+    return temperatures;
+}
+
+// Declare the chart instance globally
+let forecastChart = null;
+
+function displayWeatherChart(temperatures) {
+    const ctx = document.getElementById('forecastChart').getContext('2d');
+
+    // Destroy the existing chart if it exists
+    if (forecastChart !== null) {
+        forecastChart.destroy();
+        forecastChart = null;
+    }
+
+    // Ensure the zoom plugin is registered
+    if (typeof Chart.Zoom === 'undefined') {
+        Chart.register(ChartZoom);
+    }
+
+    // Create a new chart with zoom and pan options
+    forecastChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: temperatures.labels,
+            datasets: [{
+                label: 'Temperature (°C)',
+                data: temperatures.data,
+                borderColor: '#00796b',
+                backgroundColor: 'rgba(0, 121, 107, 0.2)',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Temperature (°C)'
+                    },
+                    min: 0,
+                    max: 40
+                }
+            },
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                zoom: {
+                    pan: {
+                        enabled: true,
+                        mode: 'xy', // Allow panning both horizontally and vertically
+                        threshold: 10 // Minimum movement distance for panning
+                    },
+                    zoom: {
+                        wheel: {
+                            enabled: true, // Enable zooming with the mouse wheel
+                            speed: 0.05 // Adjust zoom speed (lower is slower)
+                        },
+                        pinch: {
+                            enabled: true, // Enable pinch-to-zoom for touch screens
+                            mode: 'xy'
+                        },
+                        drag: {
+                            enabled: true, // Enable drag-to-zoom
+                            backgroundColor: 'rgba(0, 121, 107, 0.3)' // Optional: highlight drag area
+                        },
+                        mode: 'xy', // Allow zooming both horizontally and vertically
+                        limits: {
+                            x: { min: 'original', max: 'original' }, // Prevent excessive zoom out
+                            y: { min: 0, max: 40 }
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
 // Function to get the user's location using async/await
 async function getUserLocation() {
     try {
@@ -329,39 +547,51 @@ async function fetchWeatherByCoordinates(lat, lon) {
 
         const data = await response.json();
         console.log("Weather data received:", data);
-        displayCurrentWeather(data);
+
+        // Update the global cityName variable
+        cityName = data.name;
+
+        // Display the current weather with the updated cityName
+        displayCurrentWeather(cityName, data);
     } catch (error) {
         console.error("Error fetching weather data:", error);
         showNotification("Failed to fetch weather data. Please check your internet connection.");
-        await getWeather(defaultLocation); 
-        // Fallback to default city if API call fails
+
+        // Fallback to default location if the API call fails
+        cityName = defaultLocation; // Update cityName with defaultLocation
+        await getWeather(defaultLocation);
     }
 }
 
 
 // Function to handle manual city search with async/await
 async function fetchCityWeather() {
-    const cityInput = document.getElementById('cityInput').value;
+    const cityInput = document.getElementById('cityInput').value.trim();
     cityName = cityInput;
-    
+
     if (cityInput) {
         try {
+            showLoader(); // Display the loader
             await getWeather(cityInput); // Await the weather fetch
+            hideLoader(); // Hide the loader after the fetch
         } catch (error) {
             console.error("Error fetching city weather:", error);
             showNotification("Unable to fetch weather data for the entered city.");
+            hideLoader(); // Hide the loader in case of an error
         }
     } else {
         showNotification("Please enter a city name.");
     }
+
+    // Clear the input field
+    document.getElementById('cityInput').value = "";
 }
+
+// Add an event listener for the 'Enter' key
 document.getElementById('cityInput').addEventListener('keypress', function(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
-        showLoader();
-        const cityInput = document.getElementById('cityInput');
-        getWeather(cityInput.value);
-        cityInput.value = ""; // Clear the input explicitly
+        fetchCityWeather(); // Use the refactored function
     }
 });
 
@@ -523,6 +753,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Function to display current weather
 function displayCurrentWeather(cityName, data) {
+    cityName = data.name;
     setTimezoneOffset(data.timezone);
     const weatherDisplay = document.getElementById('weatherDisplay');
 
@@ -552,7 +783,6 @@ function displayCurrentWeather(cityName, data) {
     const windDirection = data.wind?.deg !== undefined ? getWindDirection(data.wind.deg) : 'N/A';
     const sunrise = data.sys?.sunrise ? new Date(data.sys.sunrise * 1000).toLocaleTimeString() : 'N/A';
     const sunset = data.sys?.sunset ? new Date(data.sys.sunset * 1000).toLocaleTimeString() : 'N/A';
-
     // Update the weatherDisplay container
     weatherDisplay.innerHTML = `
     <h3>${translate('currentWeather')} ${cityName}</h3>
@@ -589,6 +819,7 @@ function toggleListOfFavourites() {
         }
     }, { once: true });
 }
+
 
 // Add the current city to the favorites list
 async function addCurrentCityToFavourites() {
@@ -844,5 +1075,4 @@ function showNotification(message) {
     // Hide the notification after 3 seconds
     setTimeout(() => {
         notificationContainer.style.display = 'none';
-    }, 3000);  // The notification will disappear after 3 seconds
-}
+    }, 3000); } // The notification will disappear after 3 seconds
