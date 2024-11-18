@@ -36,6 +36,7 @@
         <li class="language-option" data-lang="fr">French</li>
     </ul>
 </div>
+        
             <a href="#" id="citiesLink">Cities</a>
             <!-- Cities dropdown -->
            <div id="citiesDropdown" class="cities-menu">
@@ -69,9 +70,8 @@
         <div id="weatherDisplay" class="weather-display">
             <h3>Current Weather</h3>
             <p class="weather-details">Weather details will appear here once a city is selected or geolocation is used.</p>
-            
         </div>
-       
+       <button class="Fav" id="addToFavouritesButton">Add this City to Favorites</button>
 
         <!-- Display for weekly Forecast -->
         <div id="forecastDisplay" class="forecast-display">
@@ -81,8 +81,12 @@
             </div>
         </div>
     </div>
-    <button class="Fav" id="addToFavouritesButton">Add to Favorites</button>
-    <div id="notificationContainer" class="notification" style="display: none;">
+   
+   <div id="forecastGraphContainer">
+  <h3>5-Day Forecast Chart</h3>
+  <canvas id="forecastChart"></canvas>
+</div>
+    <div id="notificationContainer" class="notification">
     <span id="notificationMessage"></span>
 </div>
     <div class="UnderCredits">
@@ -176,5 +180,7 @@ Maintained
          By Mwaba Chisanga, </p><p>SIN: 2304288851
      </p></td>
  </footer>
+       <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2"></script>
 </body>
 </html>
