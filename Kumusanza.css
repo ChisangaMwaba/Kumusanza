@@ -752,6 +752,7 @@ footer{
     overflow-x: ;
 }
 .notification {
+    display: none;
     padding: 12px 20px;
     background-color: #00796b;
     color: white;
