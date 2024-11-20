@@ -1075,15 +1075,16 @@ document.getElementById('citiesDropdown').addEventListener('click', function(eve
     }
 });
 
-// General function to show notification message
+// Function to show the notification
 function showNotification(message) {
-    const messageElement = document.getElementById('notificationMessage');
     const notificationContainer = document.getElementById('notificationContainer');
+    const notificationMessage = document.getElementById('notificationMessage');
 
-    messageElement.textContent = message;  // Set the message text
-    notificationContainer.style.display = 'block';  // Show the notification
+    notificationMessage.textContent = message;
+    notificationContainer.classList.add('show'); // Show the notification
 
-    // Hide the notification after 3 seconds
+    // Hide the notification after 5 seconds
     setTimeout(() => {
-        notificationContainer.style.display = 'none';
-    }, 3000); }
+        notificationContainer.classList.remove('show'); // Hide the notification
+    }, 5000); // Hide after 5 seconds
+}
