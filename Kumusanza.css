@@ -1,7 +1,6 @@
 #forecastChart {
+    height: auto;
     width: 100% !important; /* Make sure the chart is responsive */
-    max-width: 800px; /* Optional: limits the chart's maximum width */
-    height: 400px; /* Set a fixed height for the chart */
     margin: 20px auto; /* Center the chart horizontally */
     border-radius: 10px; /* Optional: round the corners of the chart */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: add a subtle shadow */
@@ -278,6 +277,13 @@ body {
 #listOfFavourites button:hover {
     background-color: #ff3b3b;
 }
+
+.container.snowy {
+    background-image: url('https://images.unsplash.com/photo-1548777123-e216912df7d8?q=80&w=1035&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    background-position: center;
+    background-size: cover;
+}
+
 .container.sunny {
     background-image: url('https://images.pexels.com/photos/789152/pexels-photo-789152.jpeg');
     background-position: center;
@@ -701,8 +707,15 @@ input[type="text"] {
 
 .loader {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: center; /* Horizontally centers the loader */
+    align-items: center;    /* Vertically centers the loader */
+    position: fixed;        /* Sticks the loader to the viewport */
+    top: 0;                 /* Ensure it starts at the top of the page */
+    left: 0;                /* Aligns to the left edge */
+    width: 100vw;           /* Covers the full width of the viewport */
+    height: 100vh;          /* Covers the full height of the viewport */
+    z-index: 1;             /* Ensures it appears above other content */
+    background-color: rgba(0, 0, 0, 0.5); /* Optional: dim background */
 }
 
 .loader div {
@@ -712,8 +725,6 @@ input[type="text"] {
     border-radius: 50%;
     background-color: aliceblue;
     animation: bounce 0.4s infinite alternate;
-    z-index: 1;
-    display: inline-block; /* Change this */
 }
 
 .loader div:nth-child(2) {
