@@ -7,60 +7,30 @@ const unitsConfig = {
     temperature: localStorage.getItem('temperatureUnit') || 'metric',
     windSpeed: localStorage.getItem('windSpeedUnit') || 'metric',
 };
+
+//Constants and global 
 let cityName = '';
 let defaultLocation = localStorage.getItem('defaultLocation') || 'Livingstone';
 let language = localStorage.getItem('language') || 'en';
 let favourites = JSON.parse(localStorage.getItem('favourites')) || [];
-// Initialize the application
+let temperatureUnit = localStorage.getItem('temperatureUnit') || 'metric';
+let windSpeedUnit = localStorage.getItem('windSpeedUnit') || 'metric';
+
+
 document.addEventListener('DOMContentLoaded', init);
 
+ // Initialization tasks
 function init() {
     updateFavouritesList();
-    // Add other initialization tasks if needed
     startClock();
 }
 
-// Translation dictionary
-const translations = {
-    en: {
-        localTime: "Local time",
-        sunrise: "Sunrise",
-        sunset: "Sunset",
-        cloudiness: "Cloudiness",
-        humidity: "Humidity",
-        pressure: "Pressure",
-        windSpeed: "Wind Speed",
-        windDirection: "Wind Direction",
-        feelsLike: "Feels Like",
-        condition: "Condition",
-        currentWeather: "Current Weather in",
-        weeklyForecast: "Weekly Forecast",
-        fiveDayForecast: "5 day Forecast"
-            },
-    fr: {
-        localTime: "heure locale",
-        sunrise: "Lever du soleil",
-        sunset: "Coucher du soleil",
-        cloudiness: "Nuageux",
-        humidity: "Humidité",
-        pressure: "Pression",
-        windSpeed: "Vitesse du vent",
-        windDirection: "Direction du vent",
-        feelsLike: "Ressenti",
-        condition: "Condition",
-        currentWeather: "Météo actuelle à",
-        weeklyForecast: "Prévisions hebdomadaires",
-        fiveDayForecast: "Prévisions sur 5 jours"
-    }
-};
+
 function translate(keyword) {
     return translations[language] && translations[language][keyword] ? translations[language][keyword] : keyword;
 }
 
 
-// Declare global variables for units
-let temperatureUnit = localStorage.getItem('temperatureUnit') || 'metric';
-let windSpeedUnit = localStorage.getItem('windSpeedUnit') || 'metric';
 
 document.addEventListener('DOMContentLoaded', async () => {
     // Render cities
@@ -86,9 +56,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     menuIcon?.addEventListener('click', toggleMenu);
 
     // Favourites event listeners
-    const addToFavouritesButton = document.getElementById('addToFavouritesButton');
     const favouritesList = document.getElementById('favourites-list');
-    addToFavouritesButton?.addEventListener('click', addCurrentCityToFavourites);
     favouritesList?.addEventListener('click', toggleListOfFavourites);
 
     // Cities dropdown event listener
@@ -124,25 +92,8 @@ function outsideClickHandler(event) {
     }
 }
 
-// Toggle visibility of cities dropdown
-// Function to toggle the cities dropdown
-function toggleCities() {
-    var citiesDropdown = document.getElementById("citiesDropdown");
-    // Toggle between showing and hiding the dropdown
-    citiesDropdown.style.display = (citiesDropdown.style.display === "none" || citiesDropdown.style.display === "") ? "block" : "none";
-}
 
-// Close the cities dropdown if clicking outside of it
-document.addEventListener('click', function(event) {
-    const citiesDropdown = document.getElementById("citiesDropdown");
-    const citiesLink = document.getElementById('citiesLink');
-    
-    // Close dropdown if click is outside of the cities dropdown and the cities link
-    if (citiesDropdown && !event.target.closest('#citiesDropdown') && !event.target.closest('#citiesLink')) {
-        citiesDropdown.style.display = 'none';
-    }
-});
-
+//Function to fetch current weather
 async function getWeather(cityName) {
     const cityWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(cityName)}&appid=${weatherApiKey}&units=${temperatureUnit}&lang=${language}`;
 
@@ -190,120 +141,65 @@ async function getWeather(cityName) {
         hideLoader();
     }
 }
-// Fetch 5-day forecast in 3-hour intervals using city coordinates (lat, lon)
-async function fetch5DayForecast(lat, lon) {
-    const forecastApiUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${weatherApiKey}&units=${temperatureUnit}&lang=${language}`;
 
-    try {
-        const response = await fetch(forecastApiUrl);
-        if (!response.ok) {
-            throw new Error('Error fetching forecast data');
-        }
+let currentWeatherData = null;
+// Function to display current weather
+function displayCurrentWeather(cityName, data) {
+    cityName = data.name;
+    currentWeatherData = data;
+    setTimezoneOffset(data.timezone);
+    const weatherDisplay = document.getElementById('weatherDisplay');
 
-        const forecastData = await response.json();
-        const dailySummaries = summarizeDailyForecasts(forecastData.list);
-        display5DayForecast(dailySummaries);
-
-        const temperatures = extractTemperatureData(forecastData);
-        displayWeatherChart(temperatures);
-        
-    } catch (error) {
-        console.error('Error:', error);
-        showNotification('Unable to fetch forecast data. Please try again later.');
+    // Check if the necessary data is available
+    if (!data || !data.weather || !data.main) {
+        weatherDisplay.innerHTML = `<p>${translate('errorFetchingData')}</p>`;
+        return;
     }
-}
+    const iconCode = data.weather[0]?.icon || '';
+    const iconUrl = iconCode ? `https://openweathermap.org/img/wn/${iconCode}@2x.png` : '';
+    const windSpeed = windSpeedUnit === 'metric' ? 'm/s' : 'mph';
+    const temperatureSymbol = temperatureUnit === 'metric' ? '°C' : '°F';
+    const pressureUnit = temperatureUnit === 'metric' ? 'hPa' : 'inHg';
+    const pressureValue = temperatureUnit === 'metric'
+        ? data.main.pressure
+        : (data.main.pressure / 33.8639).toFixed(2); // Convert pressure to inHg if imperial
 
-// Summarize hourly forecasts into daily summaries with hourly details
-function summarizeDailyForecasts(forecastList) {
-    const dailyData = {};
-
-    forecastList.forEach(forecast => {
-        const forecastDate = new Date(forecast.dt * 1000);
-        const date = forecastDate.toLocaleDateString();
-        const time = forecastDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-        if (!dailyData[date]) {
-            dailyData[date] = {
-                hours: [],
-                tempMax: forecast.main.temp,
-                tempMin: forecast.main.temp,
-                weatherDescription: forecast.weather[0].description,
-                count: 0
-            };
-        }
-
-        dailyData[date].hours.push({
-            time: time,
-            temp: forecast.main.temp,
-            weatherDescription: forecast.weather[0].description,
-            icon: forecast.weather[0].icon
-        });
-
-        // Update max and min temperature for the day
-        dailyData[date].tempMax = Math.max(dailyData[date].tempMax, forecast.main.temp);
-        dailyData[date].tempMin = Math.min(dailyData[date].tempMin, forecast.main.temp);
-        dailyData[date].count++;
-    });
-
-    return dailyData;
-}
-
-// Function to display the 5-day forecast with hourly scrolling for each day
-function display5DayForecast(dailySummaries) {
-    const forecastDisplay = document.getElementById('forecastDisplay');
-    forecastDisplay.innerHTML = `<h3>${translate('fiveDayForecast')}</h3>`;
-
-    Object.keys(dailySummaries).forEach(date => {
-        const dailyForecast = dailySummaries[date];
-        const dayContainer = document.createElement('div');
-        dayContainer.classList.add('day-container');
-
-        const dayHeader = document.createElement('h4');
-        dayHeader.textContent = date;
-        dayContainer.appendChild(dayHeader);
-
-        const hourlyForecast = document.createElement('div');
-        hourlyForecast.classList.add('hourly-forecast');
-
-        dailyForecast.hours.forEach(hour => {
-            const forecastItem = document.createElement('div');
-            forecastItem.classList.add('forecast-item');
-            
-            forecastItem.innerHTML = `
-    <p><strong>${hour.time}</strong></p>
-   <span class = "hour-top"> <span class="forecast-icon">
-        <img src="https://openweathermap.org/img/wn/${hour.icon}@2x.png" alt="${hour.weatherDescription}" />
-    </span><span class = "hour-temp"> ${hour.temp}°C</span></span>
-    <p>${hour.weatherDescription}</p>
-    
-`;
-
-            hourlyForecast.appendChild(forecastItem);
-        });
-
-        dayContainer.appendChild(hourlyForecast);
-        forecastDisplay.appendChild(dayContainer);
-    });
-}
-
-// Extract temperature data for the chart
-function extractTemperatureData(forecastData) {
-    const temperatures = {
-        labels: [], // Time labels (dates)
-        data: [] // Temperature data
+    // Helper function to determine wind direction
+    const getWindDirection = (deg) => {
+        const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+        return directions[Math.round(deg / 45) % 8];
     };
 
-    forecastData.list.forEach(forecast => {
-        const forecastDate = new Date(forecast.dt * 1000);
-        const date = forecastDate.toLocaleDateString();
-        const temp = forecast.main.temp;
-        
-        temperatures.labels.push(date);
-        temperatures.data.push(temp);
-    });
-
-    return temperatures;
+    // Extract additional data
+    const feelsLike = data.main?.feels_like || 'N/A';
+    const cloudiness = data.clouds?.all || 'N/A';
+    const windDirection = data.wind?.deg !== undefined ? getWindDirection(data.wind.deg) : 'N/A';
+    const sunrise = data.sys?.sunrise ? new Date(data.sys.sunrise * 1000).toLocaleTimeString() : 'N/A';
+    const sunset = data.sys?.sunset ? new Date(data.sys.sunset * 1000).toLocaleTimeString() : 'N/A';
+    // Update the weatherDisplay container
+    weatherDisplay.innerHTML = `
+    <h3>${translate('currentWeather')} ${cityName}</h3>
+    <div class="weather-details">
+        <span class="top-display">
+            <span class="weather-icon">
+                <img src="${iconUrl}" alt="Weather icon" />
+            </span>
+            <span class="temperature">${data.main.temp}${temperatureSymbol}</span>
+        </span>
+    </div>
+    <div class="weather-details"><div class = "subject">${translate('feelsLike')}:</div> <div class = "object">${feelsLike}${temperatureSymbol}</div></div>
+    <div class="weather-details"><div class = "subject">${translate('condition')}:</div> <div class = "object">${data.weather[0]?.description || 'N/A'}</div></div>
+    <div class="weather-details"><div class = "subject">${translate('humidity')}:</div> <div class = "object">${data.main?.humidity}%</div></div>
+    <div class="weather-details"><div class = "subject">${translate('pressure')}:</div> <div class = "object">${pressureValue} ${pressureUnit}</div></div>
+    <div class="weather-details"><div class = "subject">${translate('cloudiness')}:</div> <div class = "object">${cloudiness}%</div></div>
+    <div class="weather-details"><div class = "subject">${translate('windSpeed')}:</div> <div class = "object">${data.wind?.speed} ${windSpeed}</div></div>
+    <div class="weather-details"><div class = "subject">${translate('windDirection')}:</div> <div class = "object">${windDirection}</div></div>
+    <div class="weather-details"><div class = "subject">${translate('sunrise')}:</div> <div class = "object">${sunrise}</div></div>
+    <div class="weather-details"><div class = "subject">${translate('sunset')}:</div> <div class = "object">${sunset}</div></div>
+    <div class="weather-details"><div class = "subject">${translate('localTime')}:</div> <div class = "object">${cityTime}</div></div>
+    `;
 }
+
 
 // Fetch 5-day forecast in 3-hour intervals using city coordinates (lat, lon)
 async function fetch5DayForecast(lat, lon) {
@@ -365,6 +261,8 @@ function summarizeDailyForecasts(forecastList) {
 
 // Function to display the 5-day forecast with hourly scrolling for each day
 function display5DayForecast(dailySummaries) {
+    const temperatureSymbol = unitSymbols.temperature[temperatureUnit]; // Dynamically reflect the user's unit preference
+
     const forecastDisplay = document.getElementById('forecastDisplay');
     forecastDisplay.innerHTML = `<h3>${translate('fiveDayForecast')}</h3>`;
 
@@ -383,15 +281,35 @@ function display5DayForecast(dailySummaries) {
         dailyForecast.hours.forEach(hour => {
             const forecastItem = document.createElement('div');
             forecastItem.classList.add('forecast-item');
-            
-            forecastItem.innerHTML = `
-    <p><strong>${hour.time}</strong></p>
-   <span class = "hour-top"> <span class="forecast-icon">
-        <img src="https://openweathermap.org/img/wn/${hour.icon}@2x.png" alt="${hour.weatherDescription}" />
-    </span><span class = "hour-temp"> ${hour.temp}°C</span></span>
-    <p>${hour.weatherDescription}</p>
-    
-`;
+
+            // Create elements for better security and flexibility
+            const timeElement = document.createElement('p');
+            timeElement.innerHTML = `<strong>${hour.time}</strong>`;
+
+            const forecastIcon = document.createElement('img');
+            forecastIcon.src = `https://openweathermap.org/img/wn/${hour.icon}@2x.png`;
+            forecastIcon.alt = hour.weatherDescription;
+
+            const iconContainer = document.createElement('span');
+            iconContainer.classList.add('forecast-icon');
+            iconContainer.appendChild(forecastIcon);
+
+            const tempElement = document.createElement('span');
+            tempElement.classList.add('hour-temp');
+            tempElement.textContent = `${hour.temp || 'N/A'}${temperatureSymbol}`;
+
+            const hourTop = document.createElement('span');
+            hourTop.classList.add('hour-top');
+            hourTop.appendChild(iconContainer);
+            hourTop.appendChild(tempElement);
+
+            const descriptionElement = document.createElement('p');
+            descriptionElement.textContent = hour.weatherDescription;
+
+            // Append all elements to the forecast item
+            forecastItem.appendChild(timeElement);
+            forecastItem.appendChild(hourTop);
+            forecastItem.appendChild(descriptionElement);
 
             hourlyForecast.appendChild(forecastItem);
         });
@@ -423,14 +341,17 @@ function extractTemperatureData(forecastData) {
 // Declare the chart instance globally
 let forecastChart = null;
 
-function displayWeatherChart(temperatures) {
+function displayWeatherChart(temperatures, temperatureSymbol) {
     const ctx = document.getElementById('forecastChart').getContext('2d');
-
+var temperatureSymbol = temperatureUnit === 'metric' ? '°C' : '°F';
     // Destroy the existing chart if it exists
-    if (forecastChart !== null) {
+    if (forecastChart && typeof forecastChart.destroy === 'function') {
         forecastChart.destroy();
-        forecastChart = null;
     }
+
+    // Dynamically calculate the Y-axis range
+    const minTemp = Math.min(...temperatures.data) - 5;
+    const maxTemp = Math.max(...temperatures.data) + 5;
 
     // Ensure the zoom plugin is registered
     if (typeof Chart.Zoom === 'undefined') {
@@ -443,7 +364,7 @@ function displayWeatherChart(temperatures) {
         data: {
             labels: temperatures.labels,
             datasets: [{
-                label: 'Temperature (°C)',
+                label: `${translate('temperature')} (${temperatureSymbol})`,
                 data: temperatures.data,
                 borderColor: '#00796b',
                 backgroundColor: 'rgba(0, 121, 107, 0.2)',
@@ -461,10 +382,10 @@ function displayWeatherChart(temperatures) {
                 y: {
                     title: {
                         display: true,
-                        text: 'Temperature (°C)'
+                        text: `${translate('temperature')} (${temperatureSymbol})`
                     },
-                    min: 0,
-                    max: 40
+                    min: minTemp,
+                    max: maxTemp
                 }
             },
             responsive: true,
@@ -495,7 +416,7 @@ function displayWeatherChart(temperatures) {
                         mode: 'xy', // Allow zooming both horizontally and vertically
                         limits: {
                             x: { min: 'original', max: 'original' }, // Prevent excessive zoom out
-                            y: { min: 0, max: 40 }
+                            y: { min: minTemp - 10, max: maxTemp + 10 }
                         }
                     }
                 }
@@ -751,61 +672,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-// Function to display current weather
-function displayCurrentWeather(cityName, data) {
-    cityName = data.name;
-    setTimezoneOffset(data.timezone);
-    const weatherDisplay = document.getElementById('weatherDisplay');
-
-    // Check if the necessary data is available
-    if (!data || !data.weather || !data.main) {
-        weatherDisplay.innerHTML = `<p>${translate('errorFetchingData')}</p>`;
-        return;
-    }
-    const iconCode = data.weather[0]?.icon || '';
-    const iconUrl = iconCode ? `https://openweathermap.org/img/wn/${iconCode}@2x.png` : '';
-    const windSpeed = windSpeedUnit === 'metric' ? 'm/s' : 'mph';
-    const temperatureSymbol = temperatureUnit === 'metric' ? '°C' : '°F';
-    const pressureUnit = temperatureUnit === 'metric' ? 'hPa' : 'inHg';
-    const pressureValue = temperatureUnit === 'metric'
-        ? data.main.pressure
-        : (data.main.pressure / 33.8639).toFixed(2); // Convert pressure to inHg if imperial
-
-    // Helper function to determine wind direction
-    const getWindDirection = (deg) => {
-        const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-        return directions[Math.round(deg / 45) % 8];
-    };
-
-    // Extract additional data
-    const feelsLike = data.main?.feels_like || 'N/A';
-    const cloudiness = data.clouds?.all || 'N/A';
-    const windDirection = data.wind?.deg !== undefined ? getWindDirection(data.wind.deg) : 'N/A';
-    const sunrise = data.sys?.sunrise ? new Date(data.sys.sunrise * 1000).toLocaleTimeString() : 'N/A';
-    const sunset = data.sys?.sunset ? new Date(data.sys.sunset * 1000).toLocaleTimeString() : 'N/A';
-    // Update the weatherDisplay container
-    weatherDisplay.innerHTML = `
-    <h3>${translate('currentWeather')} ${cityName}</h3>
-    <div class="weather-details">
-        <span class="top-display">
-            <span class="weather-icon">
-                <img src="${iconUrl}" alt="Weather icon" />
-            </span>
-            <span class="temperature">${data.main.temp}${temperatureSymbol}</span>
-        </span>
-    </div>
-    <div class="weather-details"><div class = "subject">${translate('feelsLike')}:</div> <div class = "object">${feelsLike}${temperatureSymbol}</div></div>
-    <div class="weather-details"><div class = "subject">${translate('condition')}:</div> <div class = "object">${data.weather[0]?.description || 'N/A'}</div></div>
-    <div class="weather-details"><div class = "subject">${translate('humidity')}:</div> <div class = "object">${data.main?.humidity}%</div></div>
-    <div class="weather-details"><div class = "subject">${translate('pressure')}:</div> <div class = "object">${pressureValue} ${pressureUnit}</div></div>
-    <div class="weather-details"><div class = "subject">${translate('cloudiness')}:</div> <div class = "object">${cloudiness}%</div></div>
-    <div class="weather-details"><div class = "subject">${translate('windSpeed')}:</div> <div class = "object">${data.wind?.speed} ${windSpeed}</div></div>
-    <div class="weather-details"><div class = "subject">${translate('windDirection')}:</div> <div class = "object">${windDirection}</div></div>
-    <div class="weather-details"><div class = "subject">${translate('sunrise')}:</div> <div class = "object">${sunrise}</div></div>
-    <div class="weather-details"><div class = "subject">${translate('sunset')}:</div> <div class = "object">${sunset}</div></div>
-    <div class="weather-details"><div class = "subject">${translate('localTime')}:</div> <div class = "object">${cityTime}</div></div>
-    `;
-}
 
 // Toggle the favorites list visibility
 function toggleListOfFavourites() {
@@ -820,6 +686,13 @@ function toggleListOfFavourites() {
     }, { once: true });
 }
 
+document.getElementById('addToFavouritesButton').addEventListener('click', () => {
+    if (currentWeatherData) {
+        addCurrentCityToFavourites(currentWeatherData);
+    } else {
+        showNotification("No city data available. Please fetch weather information first.");
+    }
+});
 
 // Add the current city to the favorites list
 async function addCurrentCityToFavourites() {
@@ -856,7 +729,8 @@ async function updateFavouritesList() {
             event.stopPropagation(); // Prevent triggering cityElement click
             favourites = favourites.filter(c => c !== city);
             localStorage.setItem("favourites", JSON.stringify(favourites));
-            updateFavouritesList(); // Refresh the list display
+            updateFavouritesList(); 
+            showNotification (`${city} has been removed from favourites`);
         });
 
         // Add city and remove button to the list
@@ -1030,11 +904,143 @@ document.querySelectorAll('.language-option').forEach(option => {
     });
 });
 
+// Translation dictionary
+const translations = {
+    en: {
+        temperature: "Temperature",
+        localTime: "Local time",
+        sunrise: "Sunrise",
+        sunset: "Sunset",
+        cloudiness: "Cloudiness",
+        humidity: "Humidity",
+        pressure: "Pressure",
+        windSpeed: "Wind Speed",
+        windDirection: "Wind Direction",
+        feelsLike: "Feels Like",
+        condition: "Condition",
+        currentWeather: "Current Weather in",
+        weeklyForecast: "Weekly Forecast",
+        fiveDayForecast: "5 day Forecast"
+            },
+    fr: {
+        temperature: "température",
+        localTime: "heure locale",
+        sunrise: "Lever du soleil",
+        sunset: "Coucher du soleil",
+        cloudiness: "Nuageux",
+        humidity: "Humidité",
+        pressure: "Pression",
+        windSpeed: "Vitesse du vent",
+        windDirection: "Direction du vent",
+        feelsLike: "Ressenti",
+        condition: "Condition",
+        currentWeather: "Météo actuelle à",
+        weeklyForecast: "Prévisions hebdomadaires",
+        fiveDayForecast: "Prévisions sur 5 jours"
+    }
+};
+
+//functions to translate js content
+document.addEventListener("DOMContentLoaded", () => {
+    const translations = {
+        en: {
+            homeButton: "Home",
+            favouritesList: "Favourites",
+            unitsLink: "Change Units",
+            imperialBtn: "Imperial",
+            metricBtn: "Metric",
+            languageButton: "Languages",
+            citiesLink: "Cities",
+            addToFavouritesButton: "Add this City to Favorites",
+            currentWeather: "Current Weather",
+            weeklyForecast: "Weekly Forecast",
+            aboutButton: "About Kumusanza",
+            helpButton: "Help",
+            contactButton: "Contact Us",
+        },
+        fr: {
+            homeButton: "Accueil",
+            favouritesList: "Favoris",
+            unitsLink: "Changer les unités",
+            imperialBtn: "Impérial",
+            metricBtn: "Métrique",
+            languageButton: "Langues",
+            citiesLink: "Villes",
+            addToFavouritesButton: "Ajouter cette ville aux favoris",
+            currentWeather: "Météo actuelle",
+            weeklyForecast: "Prévisions hebdomadaires",
+            aboutButton: "À propos Kumusanza",
+            helpButton: "Aide",
+            contactButton: "Nous contacter",
+        },
+    };
+
+    let currentLanguage = "en"; // Default language
+
+    // Function to translate html page
+    const translatePage = (lang) => {
+        const elements = {
+            homeButton: document.getElementById("homeButton"),
+            favouritesList: document.getElementById("favourites-list"),
+            unitsLink: document.getElementById("unitsLink"),
+            imperialBtn: document.getElementById("imperialBtn"),
+            metricBtn: document.getElementById("metricBtn"),
+            languageButton: document.getElementById("languageButton"),
+            citiesLink: document.getElementById("citiesLink"),
+            addToFavouritesButton: document.getElementById("addToFavouritesButton"),
+            aboutButton: document.getElementById("aboutButton"),
+            helpButton: document.getElementById("helpButton"),
+            contactButton: document.getElementById("contactButton"),
+        };
+
+        // Update text content based on translations
+        Object.keys(elements).forEach((key) => {
+            if (elements[key]) {
+                elements[key].textContent = translations[lang][key];
+            }
+        });
+
+        // Update other dynamic text (e.g., current weather section)
+        document.querySelector("h3").textContent = translations[lang].currentWeather;
+        document.querySelector("#forecastGraphContainer h3").textContent = translations[lang].weeklyForecast;
+    };
+
+    // Add event listeners for language options
+    document.querySelectorAll(".language-option").forEach((option) => {
+        option.addEventListener("click", () => {
+            currentLanguage = option.dataset.lang;
+            translatePage(currentLanguage);
+        });
+    });
+
+    // Initialize with the default language
+    translatePage(currentLanguage);
+});
+
+
+// Function to toggle the cities dropdown
+function toggleCities() {
+    var citiesDropdown = document.getElementById("citiesDropdown");
+    // Toggle between showing and hiding the dropdown
+    citiesDropdown.style.display = (citiesDropdown.style.display === "none" || citiesDropdown.style.display === "") ? "block" : "none";
+}
+
+// Close the cities dropdown if clicking outside of it
+document.addEventListener('click', function(event) {
+    const citiesDropdown = document.getElementById("citiesDropdown");
+    const citiesLink = document.getElementById('citiesLink');
+    
+    // Close dropdown if click is outside of the cities dropdown and the cities link
+    if (citiesDropdown && !event.target.closest('#citiesDropdown') && !event.target.closest('#citiesLink')) {
+        citiesDropdown.style.display = 'none';
+    }
+});
+
 // List of cities (this can be expanded or fetched from a server in the future)
 const cities = [
-   'Chikankata', 'Chirundu', 'Choma', 'Gwembe', 'Itezhi-Tezhi', 
-    'Kalomo', 'Kazungula', 'Livingstone', 'Mazabuka', 'Monze', 
-    'Namwala', 'Pemba', 'Siavonga', 'Sinazongwe', 'Maamba', 'Sinazeze', 'Zimba'
+   'Chikankata', 'Chirundu', 'Choma', 'Gwembe', 'Tara', 
+    'Chisekesi', 'Kazungula', 'Livingstone', 'Mazabuka', 'Monze', 
+    'Namwala', 'Pemba', 'Siavonga', 'Sinazongwe', 'Maamba', 'Sinazeze', 'Zimba','Lusaka'
 ];
 
 // Function to render the list of cities
@@ -1064,7 +1070,7 @@ document.getElementById('citiesDropdown').addEventListener('click', function(eve
     }
 });
 
-// General function to show any notification message
+// General function to show notification message
 function showNotification(message) {
     const messageElement = document.getElementById('notificationMessage');
     const notificationContainer = document.getElementById('notificationContainer');
@@ -1075,4 +1081,4 @@ function showNotification(message) {
     // Hide the notification after 3 seconds
     setTimeout(() => {
         notificationContainer.style.display = 'none';
-    }, 3000); } // The notification will disappear after 3 seconds
+    }, 3000); }
