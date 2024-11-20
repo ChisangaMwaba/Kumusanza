@@ -459,12 +459,9 @@ async function getCurrentPositionAsync() {
 async function fetchWeatherByCoordinates(lat, lon) {
     const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${weatherApiKey}&units=metric`;
 
-    console.log(`Fetching weather data from: ${url}`);
-
     try {
         const response = await fetch(url);
 
-        // Check if the response is successful (status code 200)
         if (!response.ok) {
             const errorData = await response.json();
             throw new Error(`API error: ${response.status} - ${errorData.message}`);
@@ -473,20 +470,26 @@ async function fetchWeatherByCoordinates(lat, lon) {
         const data = await response.json();
         console.log("Weather data received:", data);
 
-        // Update the global cityName variable
+        // Update global cityName
         cityName = data.name;
 
-        // Display the current weather with the updated cityName
-        displayCurrentWeather(cityName, data);
-    } catch (error) {
-        console.error("Error fetching weather data:", error);
-        showNotification("Failed to fetch weather data. Please check your internet connection.");
+        // Update background based on weather
+        const weatherCondition = data.weather[0].main;
+        console.log("Weather Condition:", weatherCondition); // Debug
+        updateContainerBackground(weatherCondition);
 
-        // Fallback to default location if the API call fails
-        cityName = defaultLocation; // Update cityName with defaultLocation
-        await getWeather(defaultLocation);
+        // Display current weather
+        displayCurrentWeather(cityName, data);
+
+        // Fetch and display the 5-day forecast
+        await fetch5DayForecast(lat, lon);
+
+    } catch (error) {
+        console.error("Error:", error);
+        showNotification("Unable to fetch weather data. Showing default location.");
+        await getWeather(defaultLocation); // Fallback to default location
     } finally {
-        hideLoader(); // Hide loader after weather data is fetched or an error occurs
+        hideLoader();
     }
 }
 
@@ -1085,5 +1088,5 @@ function showNotification(message) {
     // Hide the notification after 5 seconds
     setTimeout(() => {
         notificationContainer.classList.remove('show'); // Hide the notification
-    }, 5000); // Hide after 5 seconds
+    }, 3000); // Hide after 5 seconds
 }
