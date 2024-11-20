@@ -752,7 +752,6 @@ footer{
     overflow-x: ;
 }
 .notification {
-    display: none;
     padding: 12px 20px;
     background-color: #00796b;
     color: white;
@@ -764,12 +763,18 @@ footer{
     left: 50%;
     transform: translateX(-50%) translateY(-100%);
     z-index: 1000;
-    display: block;
-    opacity: 0.9;
-    transition: transform 0.4s ease, opacity 0.4s ease;
+    opacity: 0; /* Initially hidden */
+    visibility: hidden; /* Initially hidden */
+    transition: transform 0.4s ease, opacity 0.4s ease, visibility 0.4s ease;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
+/* Add the 'show' class to make it visible */
+.notification.show {
+    opacity: 0.9;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0); /* Bring it to the center */
+}
 
 .align{
    display: inline-block;
