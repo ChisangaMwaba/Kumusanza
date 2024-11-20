@@ -427,6 +427,8 @@ var temperatureSymbol = temperatureUnit === 'metric' ? '°C' : '°F';
 // Function to get the user's location using async/await
 async function getUserLocation() {
     try {
+        showLoader(); // Show the loader while getting the location
+
         if (!navigator.geolocation) {
             throw new Error("Geolocation is not supported by this browser.");
         }
@@ -441,6 +443,8 @@ async function getUserLocation() {
         console.error('Geolocation error:', error);
         showNotification("Unable to retrieve your location. Showing weather for default city.");
         await getWeather(defaultLocation); // Fallback to default city if geolocation fails
+    } finally {
+        hideLoader(); // Hide loader after fetching weather or error handling
     }
 }
 
@@ -481,9 +485,10 @@ async function fetchWeatherByCoordinates(lat, lon) {
         // Fallback to default location if the API call fails
         cityName = defaultLocation; // Update cityName with defaultLocation
         await getWeather(defaultLocation);
+    } finally {
+        hideLoader(); // Hide loader after weather data is fetched or an error occurs
     }
 }
-
 
 // Function to handle manual city search with async/await
 async function fetchCityWeather() {
@@ -617,7 +622,7 @@ function setPressureUnit(unit) {
 function setDefaultLocation(location) {
     defaultLocation = location;
     localStorage.setItem('defaultLocation', location);
-
+      cityName = location;
     // Show the success notification that the city has been set as default
     showNotification(`${location} has been successfully set as default.`);
 }
