@@ -677,7 +677,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-
 // Toggle the favorites list visibility
 function toggleListOfFavourites() {
     const listDiv = document.getElementById("listOfFavourites");
@@ -685,11 +684,10 @@ function toggleListOfFavourites() {
 
     // Close the list if clicked outside
     document.addEventListener('click', (event) => {
-        if (!event.target.closest('#listOfFavourites') && event.target.textContent !== "Favourites") {
-            listDiv.style.display = "none";
-        }
-    }, { once: true });
-}
+    if (!event.target.closest('#listOfFavourites') && event.target.textContent !== "Favourites") {
+        listDiv.style.display = "none";
+    }
+});
 
 document.getElementById('addToFavouritesButton').addEventListener('click', () => {
     if (currentWeatherData) {
@@ -698,6 +696,7 @@ document.getElementById('addToFavouritesButton').addEventListener('click', () =>
         showNotification("No city data available. Please fetch weather information first.");
     }
 });
+}
 
 // Add the current city to the favorites list
 async function addCurrentCityToFavourites() {
