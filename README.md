@@ -54,6 +54,7 @@ https://chisangamwaba.github.io/Kumusanza/#
 Project Structure
 
 Kumusanza/
+Kumusanza/
 │
 ├── css/
 │   └── Kumusanza.css       # Stylesheets for layout and theming
@@ -63,8 +64,6 @@ Kumusanza/
 ├── index.html              # Main entry point
 ├── README.md               # Project documentation
 └── ...                     # Other files and folders
-
-
 ---
 
 Contributors
