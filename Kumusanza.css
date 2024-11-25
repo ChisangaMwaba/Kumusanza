@@ -1,21 +1,274 @@
+/* General legend container styling */
+.info.legend {
+    position: absolute; /* Allows dynamic placement */
+    top: 10px; /* Adjust vertical position */
+    left: 10px; /* Adjust horizontal position */
+    background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+    border: 1px solid #ccc; /* Subtle border */
+    border-radius: 8px; /* Rounded corners */
+    padding: 10px; /* Space around content */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Drop shadow for elevation */
+    z-index: 1000; /* Ensures it's above other elements */
+    font-size: 13px; /* Readable font size */
+    color: #333; /* Neutral text color */
+    max-width: 300px; /* Reasonable max width for the legend */
+    word-wrap: break-word; /* Wrap long text */
+    box-sizing: border-box; /* Includes padding and border in dimensions */
+}
+
+/* Title styling */
+.info.legend h4 {
+    margin: 0 0 10px; /* Space below the title */
+    font-weight: bold; /* Emphasized title */
+    font-size: 14px; /* Slightly larger font for the title */
+    text-align: left; /* Ensure title alignment */
+}
+
+/* Styling for each legend item (color box + text) */
+.info.legend div {
+    display: flex; /* Use flexbox to align items side by side */
+    align-items: center; /* Vertically align items in the center */
+    margin-bottom: 5px; /* Space between legend rows */
+}
+
+/* Align icons (color boxes) */
+.info.legend i {
+    width: 18px; /* Fixed width for color box */
+    height: 18px; /* Fixed height for color box */
+    display: inline-block; /* Keep icons inline */
+    margin-right: 8px; /* Space between icon and text */
+    vertical-align: middle; /* Align icon with text */
+    border-radius: 3px; /* Rounded corners for icons */
+    opacity: 0.8; /* Slight transparency for icons */
+}
+
+/* Styling for text next to color boxes */
+.info.legend span {
+    display: inline-block;
+    text-align: left;
+    white-space: nowrap; /* Prevent text from wrapping if it exceeds space */
+}
+
+/* Style for the box containing the weather information and icon */
+.marker {
+    background-color: rgba(224, 247, 250, 0.4); /* Semi-transparent black background */
+    color: teal; /* White text color */
+    padding: 10px 15px; /* Padding for spacing */
+    border-radius: 20px; /* Rounded corners */
+    box-shadow: 0px 4px 12px rgba(169, 169, 169, 0.3); /* Subtle shadow for the box */
+    font-family: Arial, sans-serif; /* Font for the text */
+    display: flex;
+    align-items: center;
+    max-width: 200px; /* Optional: set a max width for the tooltip box */
+    position: absolute; /* Ensure it sits above the map */
+    z-index: 1000; /* Ensure it shows on top of the map */
+    transition: all 0.3s ease; /* Smooth transition for hover and positioning */
+}
+
+/* Style for the image inside the tooltip box */
+.marker img {
+    filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.5)); /* Subtle shadow for the icon */
+    width: 30px; /* Icon width */
+    height: 30px; /* Icon height */
+    margin-right: 8px; /* Space between icon and text */
+    transition: filter 0.3s ease; /* Smooth transition for shadow */
+}
+
+/* Stronger shadow effect on hover */
+.marker img:hover {
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.5); /* Stronger shadow on hover */
+    filter: drop-shadow(3px 3px 8px rgba(0, 0, 0, 0.7)); /* Stronger shadow on hover */
+}
+
+/* Style for the text in the tooltip */
+.marker div {
+    font-size: 14px; /* Adjust text size */
+    line-height: 1.2; /* Space between lines */
+}
+
+
+/* Style for the map container */
+#weather-map-container {
+    padding: 2rem;
+    margin: 1rem auto;
+    max-width: 800px;
+    background: linear-gradient(to bottom, #f0fcfd, #e0f7fa);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    transition: all 0.3s ease-in-out;
+    transform: translateY(0);
+}
+
+#weather-map {
+    width: 100%;
+    height: 400px; /* Set map height */
+    border: 1px solid black;
+}
+
+.map-head {
+    text-transform: capitalize;
+    font-size: 1.5rem;
+    color: #00796b;
+}
+
+
+/* General Section Styles */
+#feedback {
+    padding: 2rem;
+    margin: 1rem auto;
+    max-width: 800px;
+    background: linear-gradient(to bottom, #f0fcfd, #e0f7fa);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    transition: all 0.3s ease-in-out;
+    transform: translateY(0);
+}
+
+#feedback:hover {
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
+    transform: translateY(-5px);
+}
+
+/* Section Headers */
+#feedback h2 {
+    color: #00796b; /* Matches main heading color */
+    font-family: 'Pacifico', cursive;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.6rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Form Styling */
+#feedback-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Label Styling */
+#feedback-form label {
+    font-weight: bold;
+    color: #005f56;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+/* Input, Select, and Textarea Styling */
+#name, #email, #category, #message {
+    width: 100%; 
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: 'Arial', sans-serif;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+#name:focus, #email:focus, #category:focus, #message:focus {
+    border-color: #00796b;
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 121, 107, 0.4);
+}
+
+/* Textarea for Feedback */
+#message {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Placeholder Text Styling */
+#name::placeholder, #email::placeholder, #message::placeholder {
+    color: #aaa;
+    font-style: italic;
+}
+
+/* Button Styles */
+.feedbackBtn {
+    align-self: center;
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(to bottom, #00796b, #005f56);
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.feedbackBtn:hover {
+    background: linear-gradient(to bottom, #005f56, #004d4a);
+    transform: scale(1.05);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #feedback {
+        padding: 1.5rem;
+    }
+
+    #feedback h2 {
+        font-size: 1.4rem;
+    }
+
+    #feedback-form label {
+        font-size: 0.95rem;
+    }
+
+    #name, #email, #category, #message {
+        font-size: 0.95rem;
+        padding: 0.7rem;
+    }
+
+    .feedbackBtn {
+        padding: 0.7rem 1.2rem;
+    }
+}
+
+
+/* Basic Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Weather display styles */
+#weatherDisplay h3, #forecastDisplay h3 {
+    margin-bottom: 7px;
+    color: #00796e; /* Teal color for section titles */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    font-size: 1.3em;
+}
+
+#weatherDisplay p, #forecastDisplay p {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #333; /* Dark text for readability */
+    font-family: 'Open sans'
+}
+
+
 #forecastChart {
     height: auto;
     width: 100% !important; /* Make sure the chart is responsive */
-    margin: 20px auto; /* Center the chart horizontally */
+    margin: 10px auto; /* Center the chart horizontally */
     border-radius: 10px; /* Optional: round the corners of the chart */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: add a subtle shadow */
 }
 
-forecastGraphContainer {
-    padding-top: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    padding: 20px;
-    background-color: #f9f9f9; /* Optional: light background behind the chart */
-    border-radius: 15px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Optional: shadow around the chart container */
+#forecastGraphContainer {
+    padding: 2rem;
+    margin: 1rem auto;
+    max-width: 800px;
+    background: linear-gradient(to bottom, #f0fcfd, #e0f7fa);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    transition: all 0.3s ease-in-out;
+    transform: translateY(0);
 }
 
 #forecastGraphContainer h3 {
@@ -75,12 +328,12 @@ forecastGraphContainer {
 }
 
 .subject {
-    flex: 0 0 120px; /* Fixed width for consistent alignment */
+    flex: 0 0 120px; 
     text-align: left;
 }
 
 .object {
-    flex: 0 0 120px; /* Fixed width for consistent alignment */
+    flex: 0 0 120px;
     text-align: right;
 }
 
@@ -148,6 +401,18 @@ forecastGraphContainer {
     color: #555;
     margin: 5px 0;
 }
+/* Responsive design */
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+
+    .forecast-item {
+        min-width: 100px; /* Adjust minimum width for smaller screens */
+    }
+}
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
 
 /* Responsive Design */
 @media (max-width: 600px) {
@@ -169,7 +434,6 @@ forecastGraphContainer {
         font-size: 1em;
     }
 }
-/* Hamburger menu styles */
 
 body {
     font-family: Arial, sans-serif;
@@ -235,6 +499,7 @@ body {
     
 }
 
+/*Styles for Favourites*/
 #listOfFavourites {
     position: absolute;
     display: none;
@@ -278,6 +543,52 @@ body {
     background-color: #ff3b3b;
 }
 
+/*Styles for the AddtoFavourites button */
+.Fav {
+    margin-bottom: 20px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(145deg, #00796b, #004d40); /* Teal gradient */
+    border: none;
+    border-radius: 12px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2), -4px -4px 10px rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    text-align: center;
+}
+
+/* Hover Effect */
+.Fav:hover {
+    background: linear-gradient(145deg, #004d40, #00796b);
+    transform: translateY(-3px);
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3), -2px -2px 8px rgba(255, 255, 255, 0.2);
+}
+
+/* Active Effect */
+.Fav:active {
+    background: linear-gradient(145deg, #00332e, #004d40);
+    transform: translateY(2px);
+    box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* Focus Effect */
+.Fav:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(0, 121, 107, 0.5);
+}
+
+/*Styles for the container*/
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    margin-top: 40px;
+    overflow-y: auto;
+}
+
 .container.snowy {
     background-image: url('https://images.unsplash.com/photo-1548777123-e216912df7d8?q=80&w=1035&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
     background-position: center;
@@ -316,6 +627,17 @@ body {
 }
 
 
+
+
+/*Styles for the menu icon and content*/
+.menu-icon {
+    font-size: 30px;
+    cursor: pointer;
+    padding: 5px;
+    margin: 10px;
+    color: #00796b; /* Teal color */
+}
+
 .menu-content {
     font-weight: 500;
     border: 1px solid teal;
@@ -329,29 +651,13 @@ body {
     border-radius: 5px;
     z-index: 1;
 }
-
-.menu-content {
-    display: none;
-    font-weight: 500;
-    border: 1px solid teal;
-    display: none;
-    position: absolute;
-    top: 50px;
-    left: 10px;
-    background-color: #e0f7fa;
-    color: #333;
-    padding: 10px;
-    border-radius: 5px;
-    z-index: 1;
-}
-
 .menu-content a {
     text-align: left;
     padding: 8px 0;  /* Space above and below each item */
     border-bottom: 1px solid #00796b;  /* Dividing line between items */
 }
 
-.menu-content a:last-child {
+.menu-content a:last-of-type {
     border-bottom: none;
 }
 .menu-content a {
@@ -385,38 +691,32 @@ body {
     display: block;
 }
 
-/* Weather display styles */
-#weatherDisplay h3, #forecastDisplay h3 {
-    margin-bottom: 7px;
-    color: #00796e; /* Teal color for section titles */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    font-size: 1.3em;
-}
-
-#weatherDisplay p, #forecastDisplay p {
-    margin: 5px 0;
-    font-size: 16px;
-    color: #333; /* Dark text for readability */
-    font-family: 'Open sans'
-}
-
 
 /* Button styles */
 .search-button {
-    background-color: #00796b; /* Teal color */
-    color: white;
+    background: linear-gradient(145deg, #00796b, #004d40); /* Teal gradient */ color: white;
     border: none;
     padding: 10px 20px;
     cursor: pointer;
     border-radius: 5px;
+    margin-bottom: 10px;
 }
 
 .search-button:hover {
     background-color: #004d40; /* Darker teal on hover */
 }
+/* Input styles */
+input[type="text"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
 .forecast-item {
     opacity: 0.75;
     margin-bottom: 15px;
+    margin-right: 10px; /* Space between items */
     padding: 10px;
     border: 1px solid #cfd8dc; /* Light grey border */
     border-radius: 20px; /* Smoother rounded corners */
@@ -424,20 +724,14 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow for floating effect */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     text-emphasis: black;
+    min-width: 120px; /* Minimum width for each forecast item */
+    flex: none; /* Prevent flex item from growing */
 }
 
 /* Hover effect for floating animation */
 .forecast-item:hover {
     transform: translateY(-5px); /* Slight lift on hover */
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* Darker, deeper shadow */
-}
-/* Input styles */
-input[type="text"] {
-    width: calc(100% - 22px);
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 5px;
 }
 
 /* Horizontal scrolling for hourly forecast */
@@ -447,23 +741,6 @@ input[type="text"] {
     white-space: nowrap;
 }
 
-.forecast-item {
-    min-width: 120px; /* Minimum width for each forecast item */
-    margin-right: 10px; /* Space between items */
-    flex: none; /* Prevent flex item from growing */
-}
-
-/* Responsive design */
-@media (max-width: 600px) {
-    .container {
-        padding: 10px;
-    }
-
-    .forecast-item {
-        min-width: 100px; /* Adjust minimum width for smaller screens */
-    }
-}
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
 .lining {
     text-align: center;
@@ -495,13 +772,7 @@ input[type="text"] {
     }
 }
 
-.menu-icon {
-    font-size: 30px;
-    cursor: pointer;
-    padding: 5px;
-    margin: 10px;
-    color: #00796b; /* Teal color */
-}
+
 
 /* Make the headbox fixed */
 .headbox {
@@ -510,7 +781,7 @@ input[type="text"] {
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1000;
+    z-index: 3000;
     padding: 3px;
     background-color: #e0f7fa;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -519,15 +790,6 @@ input[type="text"] {
     align-items: center; /* Centers the content vertically */
 }
 
-/* Add some margin-top to the container to avoid overlap */
-.container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    margin-top: 40px;
-    overflow-y: auto;
-}
 
 
 /* Footer container */
@@ -600,13 +862,6 @@ input[type="text"] {
 }
 
 
-/* Basic Reset */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
 /* Cities Dropdown Menu */
 .cities-menu {
     position: absolute;
@@ -670,40 +925,7 @@ input[type="text"] {
     outline: none; /* Remove default focus outline */
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5); /* Custom focus outline */
 }
-.Fav {
-    margin-bottom: 20px;
-    padding: 12px 24px;
-    font-size: 1rem;
-    font-weight: bold;
-    color: #fff;
-    background: linear-gradient(145deg, #00796b, #004d40); /* Teal gradient */
-    border: none;
-    border-radius: 12px;
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2), -4px -4px 10px rgba(255, 255, 255, 0.1);
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-    text-align: center;
-}
 
-/* Hover Effect */
-.Fav:hover {
-    background: linear-gradient(145deg, #004d40, #00796b);
-    transform: translateY(-3px);
-    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3), -2px -2px 8px rgba(255, 255, 255, 0.2);
-}
-
-/* Active Effect */
-.Fav:active {
-    background: linear-gradient(145deg, #00332e, #004d40);
-    transform: translateY(2px);
-    box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.4);
-}
-
-/* Focus Effect */
-.Fav:focus {
-    outline: none;
-    box-shadow: 0 0 0 4px rgba(0, 121, 107, 0.5);
-}
 
 .loader {
     display: flex;
@@ -741,16 +963,22 @@ input[type="text"] {
     }
 }
 
-/* Basic Reset */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+.school-links {
+    padding: 10px;
+    margin-top: 40px;
+    text-align: left;
 }
 footer{
+    border-top: 1px solid teal;
+    padding: 15px;
     text-align: center;
     overflow-x: ;
 }
+
+.copyright p {
+    margin-top: 10px;
+}
+
 .notification {
     padding: 12px 20px;
     background-color: #00796b;
@@ -780,6 +1008,7 @@ footer{
    display: inline-block;
     text-align: center;
 }
+
 .subtitle{
     text-align: center;
     color: #00796b;
@@ -808,4 +1037,5 @@ h2 {
     margin-bottom: 16px;
     font-family: 'Arial', sans-serif;  /* A more compact sans-serif font */
     padding: 5px 10px;  /* Less padding for a more compact feel */
+    z-index: 1;
     }
