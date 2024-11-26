@@ -1094,13 +1094,11 @@ document.addEventListener("DOMContentLoaded", () => {
             messageLabel: "Message:",
             feedbackBtn: "Send Feedback",
         },
-        
         fr: {
-            
             cancelResetButton: "Annuler",
             confirmResetButton: "Oui",
             confirm: "Êtes-vous sûr de vouloir réinitialiser toutes les préférences ?",
-            resetButton:"Réinitialiser les préférences",
+            resetButton: "Réinitialiser les préférences",
             homeButton: "Accueil",
             favouritesList: "Favoris",
             unitsLink: "Changer les unités",
@@ -1126,12 +1124,11 @@ document.addEventListener("DOMContentLoaded", () => {
             messageLabel: "Message:",
             feedbackBtn: "Envoyer des commentaires",
         },
-        
         ja: {
             cancelResetButton: "キャンセル",
             confirmResetButton: "はい",
             confirm: "すべての設定をリセットしてもよろしいですか？",
-            resetButton:"環境設定のリセット",
+            resetButton: "環境設定のリセット",
             homeButton: "ホーム",
             favouritesList: "お気に入り",
             unitsLink: "単位を変更",
@@ -1156,10 +1153,12 @@ document.addEventListener("DOMContentLoaded", () => {
             generalFeedbackOption: "一般的なフィードバック",
             messageLabel: "メッセージ:",
             feedbackBtn: "フィードバックを送信",
-        }
+        },
     };
 
-    // Function to translate html page
+    const defaultLanguage = "en";
+
+    // Function to translate the page
     const translatePage = (lang) => {
         const elements = {
             confirmResetButton: document.getElementById("confirmResetButton"),
@@ -1190,30 +1189,27 @@ document.addEventListener("DOMContentLoaded", () => {
             feedbackBtn: document.querySelector(".feedbackBtn"),
         };
 
-        // Update text content based on translations
         Object.keys(elements).forEach((key) => {
             if (elements[key]) {
                 elements[key].textContent = translations[lang][key];
             }
         });
 
-        // Update other dynamic text
         document.querySelector("h3").textContent = translations[lang].currentWeather;
         document.querySelector("#forecastGraphContainer h3").textContent = translations[lang].weeklyForecast;
     };
 
-
-document.querySelectorAll(".language-option").forEach((option) => {
+    document.querySelectorAll(".language-option").forEach((option) => {
         option.addEventListener("click", () => {
-            currentLanguage = option.dataset.lang;
-            translatePage(currentLanguage);
+            const selectedLanguage = option.dataset.lang;
+            localStorage.setItem("preferredLanguage", selectedLanguage);
+            translatePage(selectedLanguage);
         });
     });
 
-    // Initialize with the default language
+    const currentLanguage = localStorage.getItem("preferredLanguage") || defaultLanguage;
     translatePage(currentLanguage);
 });
-
 
 // Function to toggle the cities dropdown
 function toggleCities() {
