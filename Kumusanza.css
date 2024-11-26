@@ -979,6 +979,63 @@ footer{
     margin-top: 10px;
 }
 
+/* Modal Styles */
+.modal {
+    display: show; /* Ensure modal is hidden by default */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center the modal */
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 5000; /* Make sure it appears above other elements */
+    width: 80%;
+    max-width: 400px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s ease;
+}
+
+/* Modal visible state when 'show' class is added */
+.modal.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%); /* Center it again if needed */
+}
+
+/* Modal Content */
+.modal h2 {
+    font-size: 18px;
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* Modal Buttons */
+.modal-buttons button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    background-color: #00796b;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.modal-buttons button:last-child {
+    background-color: #f44336; /* Red for Cancel */
+}
+
+.modal-buttons button:hover {
+    background-color: #004d40;
+}
+
+.modal-buttons button:last-child:hover {
+    background-color: #e53935;
+}
 .notification {
     padding: 12px 20px;
     background-color: #00796b;
@@ -990,7 +1047,7 @@ footer{
     top: 150px;
     left: 50%;
     transform: translateX(-50%) translateY(-100%);
-    z-index: 1000;
+    z-index: 5000;
     opacity: 0; /* Initially hidden */
     visibility: hidden; /* Initially hidden */
     transition: transform 0.4s ease, opacity 0.4s ease, visibility 0.4s ease;
