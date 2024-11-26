@@ -62,6 +62,50 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Modal Elements
+    const modal = document.getElementById("confirmationModal");
+    const modalContent = modal.querySelector(".modal-content");
+    const confirmResetButton = document.getElementById("confirmResetButton");
+    const cancelResetButton = document.getElementById("cancelResetButton");
+    const resetButton = document.getElementById("resetButton");
+
+    // Toggle modal visibility
+    resetButton.addEventListener("click", () => {
+        if (modal.classList.contains("show")) {
+            modal.classList.remove("show"); // Hide if already visible
+        } else {
+            modal.classList.add("show"); // Show modal
+        }
+    });
+
+    // Confirm reset (reset preferences and show notification)
+    confirmResetButton.addEventListener("click", () => {
+        // Clear localStorage (reset preferences)
+        localStorage.clear();
+        // Show confirmation notification
+        showNotification('Your preferences have been reset.');
+        // Close the modal and reload the page
+        modal.classList.remove("show");
+        window.location.reload();
+    });
+
+    // Cancel reset (close modal without resetting preferences)
+    cancelResetButton.addEventListener("click", () => {
+        modal.classList.remove("show");
+        showNotification('Reset canceled.');
+    });
+
+    // Close modal when clicking outside its content
+    window.addEventListener("click", (event) => {
+        if (modal.classList.contains("show") && !modalContent.contains(event.target) && event.target !== resetButton) {
+            modal.classList.remove("show");
+        }
+    });
+});
+
+
 // Funtion to translate language
 function translate(keyword) {
     return translations[language] && translations[language][keyword] ? translations[language][keyword] : keyword;
@@ -544,321 +588,6 @@ function destroyMap() {
     }
 }
 
-// Global object to manage legends
-const legends = {
-    Temperature: {
-        title: "Temperature (°C)",
-        ranges: [30, 20, 10, 0, -10, -20],
-        colors: ['#fc8014', '#ffe028', '#c2ff28', '#23dddd', '#20c4e8', '#208bdc']
-    },
-    Clouds: {
-    title: "Cloud Cover (%)",
-    ranges: [10, 30, 50, 70, 90, 100],
-    colors: ['#f1f1f1', '#d0d0d0', '#a0a0a0', '#808080', '#707070', '#606060']
-},
-    Precipitation: {
-        title: "Precipitation (mm)",
-        ranges: [0, 0.1, 0.2, 0.5, 1, 10, 140],
-        colors: ['#e1c864', '#c89696', '#9696aa', '#7878be', '#6e6ecd', '#5070e1', '#1411ff']
-    },
-    Wind: {
-        title: "Wind Speed (km/h)",
-        ranges: [1, 5, 15, 25, 50, 100, 200],
-        colors: ['#ffffff00', '#eedece66', '#b364bcb3', '#b364bcba', '#3f213bcc', '#744caacb', '#4600af', '#0d1126']
-    },
-    Pressure: {
-        title: "Pressure (hPa)",
-        ranges: [94000, 96000, 98000, 100000, 101000, 102000, 104000, 106000, 108000],
-        colors: ['#0073ff', '#00aaff', '#4bd0d6', '#8de7c7', '#b0f732', '#f0b800', '#fb5515', '#f3363b', '#c60000']
-    },
-    Rain: {
-        title: "Rain (mm)",
-        ranges: [0, 0.1, 0.2, 0.5, 1, 10, 140],
-        colors: ['#e1c864', '#c89696', '#9696aa', '#7878be', '#6e6ecd', '#5070e1', '#1411ff']
-    }
-};
-// Function to create a legend
-function createLegend(layerType) {
-    const legend = legends[layerType];
-    if (!legend) return null;
-
-    const control = L.control({ position: 'topleft' });
-
-    control.onAdd = function () {
-        const container = document.getElementById('weather-map-container');
-        if (!container) {
-            console.error('weather-map-container not found');
-            return null;
-        }
-
-        const div = L.DomUtil.create('div', 'info legend');
-        div.innerHTML = `<h4>${legend.title}</h4>`;
-
-        for (let i = 0; i < legend.ranges.length; i++) {
-            const color = legend.colors[i];
-            const rangeText = legend.ranges[i + 1]
-                ? `${legend.ranges[i]}&ndash;${legend.ranges[i + 1]}`
-                : `${legend.ranges[i]}+`;
-
-            // Use proper spacing for each legend item
-            div.innerHTML += `
-                <div>
-                    <i style="background:${color}"></i>
-                    <span>${rangeText}</span>
-                </div>`;
-        }
-
-        container.appendChild(div);
-        makeLegendMovable(div);
-
-        return div;
-    };
-
-    control.onRemove = function () {
-        const legend = document.querySelector('.info.legend');
-        if (legend) {
-            legend.parentNode.removeChild(legend);
-        }
-    };
-
-    return control;
-}
-
-function makeLegendMovable(legendElement) {
-    let isDragging = false;
-    let startX, startY, initialX, initialY;
-
-    // Prevent map interactions while dragging
-    L.DomEvent.disableClickPropagation(legendElement);
-    L.DomEvent.disableScrollPropagation(legendElement);
-
-    legendElement.addEventListener('mousedown', startDrag);
-    legendElement.addEventListener('touchstart', startDrag, { passive: false });
-
-    function startDrag(e) {
-        e.preventDefault(); // Prevent default touch behavior
-        isDragging = true;
-
-        startX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
-        startY = e.type === 'mousedown' ? e.clientY : e.touches[0].clientY;
-        initialX = legendElement.offsetLeft;
-        initialY = legendElement.offsetTop;
-
-        // Disable map dragging during legend dragging
-        map.dragging.disable();
-
-        document.addEventListener('mousemove', drag);
-        document.addEventListener('touchmove', drag, { passive: false });
-        document.addEventListener('mouseup', stopDrag);
-        document.addEventListener('touchend', stopDrag);
-    }
-
-    function drag(e) {
-        if (!isDragging) return;
-
-        const container = document.getElementById('weather-map-container');
-        if (!container) return;
-
-        const currentX = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
-        const currentY = e.type === 'mousemove' ? e.clientY : e.touches[0].clientY;
-
-        const dx = currentX - startX;
-        const dy = currentY - startY;
-        let newX = initialX + dx;
-        let newY = initialY + dy;
-
-        // Constrain movement within container bounds
-        const containerRect = container.getBoundingClientRect();
-        const legendRect = legendElement.getBoundingClientRect();
-
-        if (newX < 0) newX = 0;
-        if (newY < 0) newY = 0;
-        if (newX + legendRect.width > containerRect.width) newX = containerRect.width - legendRect.width;
-        if (newY + legendRect.height > containerRect.height) newY = containerRect.height - legendRect.height;
-
-        legendElement.style.left = `${newX}px`;
-        legendElement.style.top = `${newY}px`;
-    }
-
-    function stopDrag() {
-        isDragging = false;
-
-        // Re-enable map dragging after legend dragging
-        map.dragging.enable();
-
-        document.removeEventListener('mousemove', drag);
-        document.removeEventListener('touchmove', drag);
-        document.removeEventListener('mouseup', stopDrag);
-        document.removeEventListener('touchend', stopDrag);
-    }
-}
-function clearCityMarkers(){cityMarkers.forEach(marker => map.removeLayer(marker));
-cityMarkers =[];
-}
-
-// Function to initialize the map
-function initializeMap(lat, lon, cityName) {
-    destroyMap(); // Destroy the previous map instance
-
-    let currentLegend = null; // Variable to store the active legend
-
-    try {
-        // Initialize a new map with the given coordinates
-        map = L.map('weather-map').setView([lat, lon], 8);
-
-        // Base OpenStreetMap tile layer
-        const baseLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        // Weather layers from OpenWeatherMap
-        const tempLayer = L.tileLayer(`https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=${weatherApiKey}`, { opacity: 1 });
-        const cloudLayer = L.tileLayer(`https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${weatherApiKey}`, { opacity: 1 });
-        const precipitationLayer = L.tileLayer(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${weatherApiKey}`, { opacity: 1 });
-        const pressureLayer = L.tileLayer(`https://tile.openweathermap.org/map/pressure_new/{z}/{x}/{y}.png?appid=${weatherApiKey}`, { opacity: 1 });
-        const windLayer = L.tileLayer(`https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=${weatherApiKey}`, { opacity: 1 });
-        const weatherLayer = L.tileLayer(`https://tile.openweathermap.org/map/weather_new/{z}/{x}/{y}.png?appid=${weatherApiKey}`, { opacity: 1 });
-
-        // Add a marker at the searched city location
-        L.marker([lat, lon]).addTo(map)
-            .bindPopup(`Weather for ${cityName}`)
-            .openPopup();
-
-        // Add layer control to toggle between weather layers
-        L.control.layers(
-            { 'Base Map': baseLayer },
-            {
-                'Temperature': tempLayer,
-                'Clouds': cloudLayer,
-                'Precipitation': precipitationLayer,
-                'Pressure': pressureLayer,
-                'Wind': windLayer,
-                'Weather Conditions': weatherLayer
-            }
-        ).addTo(map);
-
-        // Add default layer and legend
-        tempLayer.addTo(map);
-        currentLegend = createLegend('Temperature');
-        currentLegend.addTo(map);
-
-        // Dynamic legend handling
-        map.on('overlayadd', function (e) {
-            // Remove the existing legend
-            if (currentLegend) map.removeControl(currentLegend);
-
-            // Add the new legend
-            currentLegend = createLegend(e.name);
-            currentLegend.addTo(map);
-        });
-
-        map.on('overlayremove', function (e) {
-            // If the removed layer matches the current legend, remove it
-            if (currentLegend && currentLegend.options.name === e.name) {
-                map.removeControl(currentLegend);
-                currentLegend = null;
-            }
-        });
-
-    } catch (error) {
-        console.error("Error initializing map:", error);
-    }
-
-    // Fetch and display nearby cities when the map is zoomed or moved
-    map.on('zoomend', updateCityMarkers);
-    map.on('moveend', updateCityMarkers);
-
-    // Initial fetch of city markers
-    updateCityMarkers();
-}
-// Function to fetch nearby cities and update markers
-async function updateCityMarkers() {
-    const bounds = map.getBounds();
-    const zoom = map.getZoom();
-
-    // Only fetch markers for a zoom level that makes sense (avoid unnecessary data fetch)
-    if (zoom < 7) {
-        console.log("Zoom level too low for city markers.");
-        clearCityMarkers()
-        return;
-    }
-
-    // API URL for finding cities in the current map bounds
-    const bbox = `${bounds.getSouthWest().lng},${bounds.getSouthWest().lat},${bounds.getNorthEast().lng},${bounds.getNorthEast().lat}`
-    .replace(/\s+/g, ''); // Remove any spaces from the bbox string
-const citySearchUrl = `https://api.openweathermap.org/data/2.5/box/city?bbox=${bbox},${zoom}&appid=${weatherApiKey}&units=${temperatureUnit}`;
-
-
-try {
-    // Fetch city data
-    const response = await fetch(citySearchUrl);
-    if (!response.ok) {
-        throw new Error(`Failed to fetch data: ${response.statusText}`);
-    }
-    const rawResponse = await response.text();
-    
-    let data;
-    try {
-        data = JSON.parse(rawResponse); // Parse JSON
-    } catch (error) {
-        console.error("Error parsing JSON:", error);
-        return;
-    }
-    
-    // Fix: Adjust coordinate and cloud property names before processing
-    if (data.list) {
-        data.list.forEach(city => {
-            // Correct the coordinates and cloud properties
-            city.coord = {
-                lat: city.coord.Lat,   // Fix: Rename 'Lat' to 'lat'
-                lon: city.coord.Lon    // Fix: Rename 'Lon' to 'lon'
-            };
-            delete city.coord.Lat;  // Delete the original 'Lat'
-            delete city.coord.Lon;  // Delete the original 'Lon'
-
-            if (city.clouds && city.clouds['today']) {
-                city.clouds = city.clouds['today'];  // Fix the clouds property name
-            }
-
-            
-            const { name, coord, main, weather } = city;
-            if (!coord || typeof coord.lat === "undefined" || typeof coord.lon === "undefined") {
-                console.error(`Invalid coordinates for city: ${name}`);
-                return;
-            }
-
-            const lat = coord.lat;
-            const lon = coord.lon;
-            const temp = main.temp;
-            const icon = weather[0].icon;
-            const iconUrl = `https://openweathermap.org/img/wn/${icon}@2x.png`;
-
-            
-            // Create a marker for each city
-            const marker = L.marker([lat, lon])
-                .bindTooltip(
-                    `<div class="marker" style="display: flex; align-items: center;">
-                        <img src="${iconUrl}" alt="${weather[0].description}" style="width: 30px; height: 30px; margin-right: 8px;">
-                        <div>
-                            <strong>${name}</strong><br>
-                            ${temp}° ${temperatureUnit === "metric" ? "C" : "F"}
-                        </div>
-                    </div>`,
-                    { permanent: true, direction: "top" }
-                )
-                .addTo(map);
-
-            cityMarkers.push(marker);
-        });
-    } else {
-        console.warn("No valid cities found in the API response");
-    }
-
-    
-} catch (error) {
-    console.error("Error updating city markers:", error);
-}
-}
 
 
 // Function to handle manual city search
@@ -1336,6 +1065,10 @@ const translations = {
 document.addEventListener("DOMContentLoaded", () => {
     const translations = {
         en: {
+            cancelResetButton: "Cancel",
+            confirmResetButton: "Yes",
+            confirm: "Are you sure you want to reset all preferences?",
+            resetButton: "Reset all Preferences",
             homeButton: "Home",
             favouritesList: "Favourites",
             unitsLink: "Change Units",
@@ -1349,9 +1082,25 @@ document.addEventListener("DOMContentLoaded", () => {
             aboutButton: "About Kumusanza",
             helpButton: "Help",
             contactButton: "Contact Us",
+            chartHead: "5-Day Forecast Chart",
+            mapHead: "Weather Maps",
+            feedbackHead: "We Value Your Feedback",
+            nameLabel: "Name:",
+            emailLabel: "Email:",
+            categoryLabel: "Category:",
+            suggestionOption: "Suggestion",
+            bugReportOption: "Bug Report",
+            generalFeedbackOption: "General Feedback",
+            messageLabel: "Message:",
+            feedbackBtn: "Send Feedback",
         },
         
         fr: {
+            
+            cancelResetButton: "Annuler",
+            confirmResetButton: "Oui",
+            confirm: "Êtes-vous sûr de vouloir réinitialiser toutes les préférences ?",
+            resetButton:"Réinitialiser les préférences",
             homeButton: "Accueil",
             favouritesList: "Favoris",
             unitsLink: "Changer les unités",
@@ -1365,29 +1114,58 @@ document.addEventListener("DOMContentLoaded", () => {
             aboutButton: "À propos Kumusanza",
             helpButton: "Aide",
             contactButton: "Nous contacter",
+            chartHead: "Graphique de prévisions sur 5 jours",
+            mapHead: "Cartes météorologiques",
+            feedbackHead: "Nous apprécions vos retours",
+            nameLabel: "Nom:",
+            emailLabel: "Email:",
+            categoryLabel: "Catégorie:",
+            suggestionOption: "Suggestion",
+            bugReportOption: "Rapport de bogue",
+            generalFeedbackOption: "Retour général",
+            messageLabel: "Message:",
+            feedbackBtn: "Envoyer des commentaires",
         },
         
         ja: {
-    homeButton: "ホーム",
-    favouritesList: "お気に入り",
-    unitsLink: "単位を変更",
-    imperialBtn: "インペリアル",
-    metricBtn: "メートル法",
-    languageButton: "言語",
-    citiesLink: "都市",
-    addToFavouritesButton: "この都市をお気に入りに追加",
-    currentWeather: "現在の天気",
-    weeklyForecast: "週間予報",
-    aboutButton: "Kumusanzaについて",
-    helpButton: "ヘルプ",
-    contactButton: "お問い合わせ"
-}
+            cancelResetButton: "キャンセル",
+            confirmResetButton: "はい",
+            confirm: "すべての設定をリセットしてもよろしいですか？",
+            resetButton:"環境設定のリセット",
+            homeButton: "ホーム",
+            favouritesList: "お気に入り",
+            unitsLink: "単位を変更",
+            imperialBtn: "インペリアル",
+            metricBtn: "メートル法",
+            languageButton: "言語",
+            citiesLink: "都市",
+            addToFavouritesButton: "この都市をお気に入りに追加",
+            currentWeather: "現在の天気",
+            weeklyForecast: "週間予報",
+            aboutButton: "Kumusanzaについて",
+            helpButton: "ヘルプ",
+            contactButton: "お問い合わせ",
+            chartHead: "5日間の予報チャート",
+            mapHead: "天気図",
+            feedbackHead: "フィードバックを大切にしています",
+            nameLabel: "名前:",
+            emailLabel: "メール:",
+            categoryLabel: "カテゴリー:",
+            suggestionOption: "提案",
+            bugReportOption: "バグ報告",
+            generalFeedbackOption: "一般的なフィードバック",
+            messageLabel: "メッセージ:",
+            feedbackBtn: "フィードバックを送信",
+        }
     };
 
-   
     // Function to translate html page
     const translatePage = (lang) => {
         const elements = {
+            confirmResetButton: document.getElementById("confirmResetButton"),
+            cancelResetButton: document.getElementById("cancelResetButton"),
+            confirm: document.getElementById("confirm"),
+            resetButton: document.getElementById("resetButton"),
             homeButton: document.getElementById("homeButton"),
             favouritesList: document.getElementById("favourites-list"),
             unitsLink: document.getElementById("unitsLink"),
@@ -1399,6 +1177,17 @@ document.addEventListener("DOMContentLoaded", () => {
             aboutButton: document.getElementById("aboutButton"),
             helpButton: document.getElementById("helpButton"),
             contactButton: document.getElementById("contactButton"),
+            chartHead: document.getElementById("chartHead"),
+            mapHead: document.querySelector(".map-head"),
+            feedbackHead: document.getElementById("feedbackHead"),
+            nameLabel: document.querySelector(".nameLable"),
+            emailLabel: document.querySelector(".emailLable"),
+            categoryLabel: document.querySelector("[for='category']"),
+            suggestionOption: document.querySelector("[value='Suggestion']"),
+            bugReportOption: document.querySelector("[value='Bug Report']"),
+            generalFeedbackOption: document.querySelector("[value='General Feedback']"),
+            messageLabel: document.querySelector(".messageLable"),
+            feedbackBtn: document.querySelector(".feedbackBtn"),
         };
 
         // Update text content based on translations
@@ -1413,8 +1202,8 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelector("#forecastGraphContainer h3").textContent = translations[lang].weeklyForecast;
     };
 
-    // Add event listeners for language options
-    document.querySelectorAll(".language-option").forEach((option) => {
+
+document.querySelectorAll(".language-option").forEach((option) => {
         option.addEventListener("click", () => {
             currentLanguage = option.dataset.lang;
             translatePage(currentLanguage);
@@ -1489,4 +1278,322 @@ function showNotification(message) {
     setTimeout(() => {
         notificationContainer.classList.remove('show'); // Hide the notification
     }, 3000);
+}
+
+
+const temperatureSymbol = temperatureUnit === 'metric' ? '°C' : '°F';
+// Global object to manage legends
+const legends = {
+    Temperature: {
+        title: `${translate('temperature')} (${temperatureSymbol})`,
+        ranges: [30, 20, 10, 0, -10, -20],
+        colors: ['#fc8014', '#ffe028', '#c2ff28', '#23dddd', '#20c4e8', '#208bdc']
+    },
+    Clouds: {
+    title: "Cloud Cover (%)",
+    ranges: [10, 30, 50, 70, 90, 100],
+    colors: ['#f1f1f1', '#d0d0d0', '#a0a0a0', '#808080', '#707070', '#606060']
+},
+    Precipitation: {
+        title: "Precipitation (mm)",
+        ranges: [0, 0.1, 0.2, 0.5, 1, 10, 140],
+        colors: ['#e1c864', '#c89696', '#9696aa', '#7878be', '#6e6ecd', '#5070e1', '#1411ff']
+    },
+    Wind: {
+        title: "Wind Speed (km/h)",
+        ranges: [1, 5, 15, 25, 50, 100, 200],
+        colors: ['#ffffff00', '#eedece66', '#b364bcb3', '#b364bcba', '#3f213bcc', '#744caacb', '#4600af', '#0d1126']
+    },
+    Pressure: {
+        title: "Pressure (hPa)",
+        ranges: [94000, 96000, 98000, 100000, 101000, 102000, 104000, 106000, 108000],
+        colors: ['#0073ff', '#00aaff', '#4bd0d6', '#8de7c7', '#b0f732', '#f0b800', '#fb5515', '#f3363b', '#c60000']
+    },
+    Rain: {
+        title: "Rain (mm)",
+        ranges: [0, 0.1, 0.2, 0.5, 1, 10, 140],
+        colors: ['#e1c864', '#c89696', '#9696aa', '#7878be', '#6e6ecd', '#5070e1', '#1411ff']
+    }
+};
+// Function to create a legend
+function createLegend(layerType) {
+    const legend = legends[layerType];
+    if (!legend) return null;
+
+    const control = L.control({ position: 'topleft' });
+
+    control.onAdd = function () {
+        const container = document.getElementById('weather-map-container');
+        if (!container) {
+            console.error('weather-map-container not found');
+            return null;
+        }
+
+        const div = L.DomUtil.create('div', 'info legend');
+        div.innerHTML = `<h4>${legend.title}</h4>`;
+
+        for (let i = 0; i < legend.ranges.length; i++) {
+            const color = legend.colors[i];
+            const rangeText = legend.ranges[i + 1]
+                ? `${legend.ranges[i]}&ndash;${legend.ranges[i + 1]}`
+                : `${legend.ranges[i]}+`;
+
+            // Use proper spacing for each legend item
+            div.innerHTML += `
+                <div>
+                    <i style="background:${color}"></i>
+                    <span>${rangeText}</span>
+                </div>`;
+        }
+
+        container.appendChild(div);
+        makeLegendMovable(div);
+
+        return div;
+    };
+
+    control.onRemove = function () {
+        const legend = document.querySelector('.info.legend');
+        if (legend) {
+            legend.parentNode.removeChild(legend);
+        }
+    };
+
+    return control;
+}
+
+function makeLegendMovable(legendElement) {
+    let isDragging = false;
+    let startX, startY, initialX, initialY;
+
+    // Prevent map interactions while dragging
+    L.DomEvent.disableClickPropagation(legendElement);
+    L.DomEvent.disableScrollPropagation(legendElement);
+
+    legendElement.addEventListener('mousedown', startDrag);
+    legendElement.addEventListener('touchstart', startDrag, { passive: false });
+
+    function startDrag(e) {
+        e.preventDefault(); // Prevent default touch behavior
+        isDragging = true;
+
+        startX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
+        startY = e.type === 'mousedown' ? e.clientY : e.touches[0].clientY;
+        initialX = legendElement.offsetLeft;
+        initialY = legendElement.offsetTop;
+
+        // Disable map dragging during legend dragging
+        map.dragging.disable();
+
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('touchmove', drag, { passive: false });
+        document.addEventListener('mouseup', stopDrag);
+        document.addEventListener('touchend', stopDrag);
+    }
+
+    function drag(e) {
+        if (!isDragging) return;
+
+        const container = document.getElementById('weather-map-container');
+        if (!container) return;
+
+        const currentX = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
+        const currentY = e.type === 'mousemove' ? e.clientY : e.touches[0].clientY;
+
+        const dx = currentX - startX;
+        const dy = currentY - startY;
+        let newX = initialX + dx;
+        let newY = initialY + dy;
+
+        // Constrain movement within container bounds
+        const containerRect = container.getBoundingClientRect();
+        const legendRect = legendElement.getBoundingClientRect();
+
+        if (newX < 0) newX = 0;
+        if (newY < 0) newY = 0;
+        if (newX + legendRect.width > containerRect.width) newX = containerRect.width - legendRect.width;
+        if (newY + legendRect.height > containerRect.height) newY = containerRect.height - legendRect.height;
+
+        legendElement.style.left = `${newX}px`;
+        legendElement.style.top = `${newY}px`;
+    }
+
+    function stopDrag() {
+        isDragging = false;
+
+        // Re-enable map dragging after legend dragging
+        map.dragging.enable();
+
+        document.removeEventListener('mousemove', drag);
+        document.removeEventListener('touchmove', drag);
+        document.removeEventListener('mouseup', stopDrag);
+        document.removeEventListener('touchend', stopDrag);
+    }
+}
+function clearCityMarkers(){cityMarkers.forEach(marker => map.removeLayer(marker));
+cityMarkers =[];
+}
+
+// Function to initialize the map
+function initializeMap(lat, lon, cityName) {
+    destroyMap(); // Destroy the previous map instance
+
+    let currentLegend = null; // Variable to store the active legend
+
+    try {
+        // Initialize a new map with the given coordinates
+        map = L.map('weather-map').setView([lat, lon], 8);
+
+        // Base OpenStreetMap tile layer
+        const baseLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Weather layers from OpenWeatherMap
+        const tempLayer = L.tileLayer(`https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=${weatherApiKey}`, { opacity: 1 });
+        const cloudLayer = L.tileLayer(`https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${weatherApiKey}`, { opacity: 1 });
+        const precipitationLayer = L.tileLayer(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${weatherApiKey}`, { opacity: 1 });
+        const pressureLayer = L.tileLayer(`https://tile.openweathermap.org/map/pressure_new/{z}/{x}/{y}.png?appid=${weatherApiKey}`, { opacity: 1 });
+        const windLayer = L.tileLayer(`https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=${weatherApiKey}`, { opacity: 1 });
+        const weatherLayer = L.tileLayer(`https://tile.openweathermap.org/map/weather_new/{z}/{x}/{y}.png?appid=${weatherApiKey}`, { opacity: 1 });
+
+        // Add a marker at the searched city location
+        L.marker([lat, lon]).addTo(map)
+            .bindPopup(`Weather for ${cityName}`)
+            .openPopup();
+
+        // Add layer control to toggle between weather layers
+        L.control.layers(
+            { 'Base Map': baseLayer },
+            {
+                'Temperature': tempLayer,
+                'Clouds': cloudLayer,
+                'Precipitation': precipitationLayer,
+                'Pressure': pressureLayer,
+                'Wind': windLayer,
+                'Weather Conditions': weatherLayer
+            }
+        ).addTo(map);
+
+        // Add default layer and legend
+        tempLayer.addTo(map);
+        currentLegend = createLegend('Temperature');
+        currentLegend.addTo(map);
+
+        // Dynamic legend handling
+        map.on('overlayadd', function (e) {
+            // Remove the existing legend
+            if (currentLegend) map.removeControl(currentLegend);
+
+            // Add the new legend
+            currentLegend = createLegend(e.name);
+            currentLegend.addTo(map);
+        });
+
+        map.on('overlayremove', function (e) {
+            // If the removed layer matches the current legend, remove it
+            if (currentLegend && currentLegend.options.name === e.name) {
+                map.removeControl(currentLegend);
+                currentLegend = null;
+            }
+        });
+
+    } catch (error) {
+        console.error("Error initializing map:", error);
+    }
+
+    // Fetch and display nearby cities when the map is zoomed or moved
+    map.on('zoomend', updateCityMarkers);
+    map.on('moveend', updateCityMarkers);
+
+    // Initial fetch of city markers
+    updateCityMarkers();
+}
+// Function to fetch nearby cities and update markers
+async function updateCityMarkers() {
+    const bounds = map.getBounds();
+    const zoom = map.getZoom();
+
+    // Only fetch markers for a zoom level that makes sense (avoid unnecessary data fetch)
+    if (zoom < 7) {
+        console.log("Zoom level too low for city markers.");
+        clearCityMarkers()
+        return;
+    }
+
+    // API URL for finding cities in the current map bounds
+    const bbox = `${bounds.getSouthWest().lng},${bounds.getSouthWest().lat},${bounds.getNorthEast().lng},${bounds.getNorthEast().lat}`
+    .replace(/\s+/g, ''); // Remove any spaces from the bbox string
+const citySearchUrl = `https://api.openweathermap.org/data/2.5/box/city?bbox=${bbox},${zoom}&appid=${weatherApiKey}&units=${temperatureUnit}`;
+
+
+try {
+    // Fetch city data
+    const response = await fetch(citySearchUrl);
+    if (!response.ok) {
+        throw new Error(`Failed to fetch data: ${response.statusText}`);
+    }
+    const rawResponse = await response.text();
+    
+    let data;
+    try {
+        data = JSON.parse(rawResponse); // Parse JSON
+    } catch (error) {
+        console.error("Error parsing JSON:", error);
+        return;
+    }
+    
+    // Fix: Adjust coordinate and cloud property names before processing
+    if (data.list) {
+        data.list.forEach(city => {
+            // Correct the coordinates and cloud properties
+            city.coord = {
+                lat: city.coord.Lat,   // Fix: Rename 'Lat' to 'lat'
+                lon: city.coord.Lon    // Fix: Rename 'Lon' to 'lon'
+            };
+            delete city.coord.Lat;  // Delete the original 'Lat'
+            delete city.coord.Lon;  // Delete the original 'Lon'
+
+            if (city.clouds && city.clouds['today']) {
+                city.clouds = city.clouds['today'];  // Fix the clouds property name
+            }
+
+            
+            const { name, coord, main, weather } = city;
+            if (!coord || typeof coord.lat === "undefined" || typeof coord.lon === "undefined") {
+                console.error(`Invalid coordinates for city: ${name}`);
+                return;
+            }
+
+            const lat = coord.lat;
+            const lon = coord.lon;
+            const temp = main.temp;
+            const icon = weather[0].icon;
+            const iconUrl = `https://openweathermap.org/img/wn/${icon}@2x.png`;
+
+            
+            // Create a marker for each city
+            const marker = L.marker([lat, lon])
+                .bindTooltip(
+                    `<div class="marker" style="display: flex; align-items: center;">
+                        <img src="${iconUrl}" alt="${weather[0].description}" style="width: 30px; height: 30px; margin-right: 8px;">
+                        <div>
+                            <strong>${name}</strong><br>
+                            ${temp}° ${temperatureUnit === "metric" ? "C" : "F"}
+                        </div>
+                    </div>`,
+                    { permanent: true, direction: "top" }
+                )
+                .addTo(map);
+
+            cityMarkers.push(marker);
+        });
+    } else {
+        console.warn("No valid cities found in the API response");
+    }
+
+    
+} catch (error) {
+    console.error("Error updating city markers:", error);
+}
 }
