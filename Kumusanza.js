@@ -1093,8 +1093,10 @@ document.addEventListener("DOMContentLoaded", () => {
             generalFeedbackOption: "General Feedback",
             messageLabel: "Message:",
             feedbackBtn: "Send Feedback",
+            searchButton: "Get Weather",
         },
         fr: {
+            searchButton: "obtenir la météo",
             cancelResetButton: "Annuler",
             confirmResetButton: "Oui",
             confirm: "Êtes-vous sûr de vouloir réinitialiser toutes les préférences ?",
@@ -1125,6 +1127,7 @@ document.addEventListener("DOMContentLoaded", () => {
             feedbackBtn: "Envoyer des commentaires",
         },
         ja: {
+            searchButton: "天気を取得する",
             cancelResetButton: "キャンセル",
             confirmResetButton: "はい",
             confirm: "すべての設定をリセットしてもよろしいですか？",
@@ -1161,6 +1164,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Function to translate the page
     const translatePage = (lang) => {
         const elements = {
+            searchButton: document.getElementById("searchButton"),
             confirmResetButton: document.getElementById("confirmResetButton"),
             cancelResetButton: document.getElementById("cancelResetButton"),
             confirm: document.getElementById("confirm"),
