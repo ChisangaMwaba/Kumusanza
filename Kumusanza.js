@@ -62,6 +62,24 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+function preloadBackgroundImages() {
+    const imageUrls = [
+        'https://images.pexels.com/photos/2086620/pexels-photo-2086620.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+        'https://images.pexels.com/photos/789152/pexels-photo-789152.jpeg',
+        'https://images.unsplash.com/photo-1492011221367-f47e3ccd77a0?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        'https://images.pexels.com/photos/2144326/pexels-photo-2144326.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+        'https://img.freepik.com/free-photo/vertical-shot-thick-green-trees-calm-sky-with-few-clouds_181624-7403.jpg?t=st=1730970666~exp=1730974266~hmac=d8132430bcae602cfb45a169c8046af52e8a84ec68f1ecb595ce37acfdbfa9b2&w=1060',
+        'https://img.freepik.com/free-photo/beautiful-skyscape-daytime_23-2149265589.jpg?t=st=1730973843~exp=1730977443~hmac=d1bd062b443ba27b6e9c744a6eaf2a9c01013f28ae82ed3c5808a46e97632eb0&w=1060'
+    ];
+
+    imageUrls.forEach(url => {
+        const img = new Image();
+        img.src = url;
+    });
+}
+
+// Call the function to preload the images
+document.addEventListener('DOMContentLoaded', preloadBackgroundImages);
 
 document.addEventListener("DOMContentLoaded", () => {
     // Modal Elements
@@ -627,13 +645,12 @@ async function goHome() {
     if (menu) {
         menu.classList.remove("show");
     }
-    
-    try {
-        await getWeather(defaultLocation);
-    } catch (error) {
-        console.error('Error fetching default location weather:', error);
-        showNotification('Unable to fetch weather data for the default location.');
-    }
+
+    // Show a notification before redirecting
+    showNotification('Redirecting');
+
+    // Redirect to index.html
+    window.location.href = "index.html";
 }
 
 function toggleUnits(event) {
