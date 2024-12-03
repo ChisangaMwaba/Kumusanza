@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kumusanza</title>
+         <!-- Leaflet.js CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- Google fonts import-->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+    <!-- style CSS -->
+    <link rel="stylesheet" href="Kumusanza.css">
+    <!-- script -->
+    <script src="Kumusanza.js" defer></script>
+</head>
+<body>
+  
+    <div class="headbox">
+    <!-- Hamburger Menu -->
+    <div class="dropdown-menu">
+        <span class="menu-icon" id="menu-icon">&#9776;</span>
+        <div id="menu" class="menu-content">
+            <a href="#" id="homeButton">Home</a>
+           <a href="#" id="favourites-list">Favourites</a>
+            <div id="listOfFavourites"></div>
+            <a href="#" id="unitsLink">Change Units</a>
+            <div id="unitsDropdown" class="unitsDropdown">
+                <ul>
+                    <li>
+                        <button id="imperialBtn">Imperial</button>
+            </li>
+                    <li>
+    <button id="metricBtn">Metric</button> 
+                    </li>
+                </ul>
+            </div>
+            
+           <a href="#" id="languageButton">Languages</a>
+<div id="languageDropdown" class="language-menu">
+    <ul>
+        <li class="language-option" data-lang="en">English</li>
+        <li class="language-option" data-lang="fr">French</li>
+        <li class="language-option" data-lang="ja">Japanese</li>
+    </ul>
+</div>
+        
+            <a href="#" id="citiesLink">Cities</a>
+            <!-- Cities dropdown -->
+           <div id="citiesDropdown" class="cities-menu">
+    <ul id="citiesList"></ul>
+</div>
+            <a href="#" id="resetButton">Reset all Preferences</a>
+        </div>
+    </div>
+<h2>Southern Zambia Weather Hub</h2>
+    </div>
+    <!-- Main Content Container -->
+    <div id="container" class="container">
+        <div class="lining">
+            <span class="align">
+                <span class="subtitle">Kumusanza</span>
+        <div id="time" class="time"></div>
+            </span>
+        </div>
+
+        <!-- Search Box for City Weather -->
+        <div class="search-box">
+            <input type="text" id="cityInput" placeholder="Enter a city name">
+            <button class="search-button" id="searchButton" onclick="fetchCityWeather()">Get Weather</button>
+        </div>
+        <div class="loader" aria-label="Loading, please wait">
+    <div></div>
+    <div></div>
+    <div></div>
+</div>
+
+        <!-- Display for Weather Information -->
+        <div id="weatherDisplay" class="weather-display">
+            <h3>Current Weather</h3>
+            <p class="weather-details">Weather details will appear here once a city is selected or geolocation is used.</p>
+        </div>
+       <button class="Fav" id="addToFavouritesButton">Add this City to Favorites</button>
+
+        <!-- Display for weekly Forecast -->
+        <div id="forecastDisplay" class="forecast-display">
+            <h3> 5 Days Forecast (3-hour Intervals)</h3>
+            <div class="forecast-scroll">
+                <!-- Forecast items will be injected here dynamically -->
+            </div>
+        </div>
+    </div>
+   <!-- The Chart -->
+   <div id="forecastGraphContainer">
+  <h3 id="chartHead">5-Day Forecast Chart</h3>
+  <canvas id="forecastChart"></canvas>
+</div>
+    <!-- Genral notifications -->
+    <div id="notificationContainer" class="notification">
+    <span id="notificationMessage"></span>
+</div>
+    
+<!-- Confirmation Modal -->
+<div id="confirmationModal" class="modal">
+    <span class="modal-content">
+        <h2 id="confirm">Are you sure you want to reset all preferences?</h2>
+        <div class="modal-buttons">
+            <button id="confirmResetButton">Yes</button>
+            <button id="cancelResetButton">Cancel</button>
+        </div>
+    </span>
+</div>
+
+<!-- Notification container -->
+<div id="notificationContainer" class="notification">
+    <span id="notificationMessage"></span>
+</div>
+   <!-- The map -->
+   <section id="weather-map-container">
+    <h2 class="map-head">Weather Maps</h2>
+    <div id="weather-map"></div> <!-- Map container -->
+</section>
+          <!-- Feedback Section -->
+<section id="feedback">
+    <h2 id="feedbackHead">We Value Your Feedback</h2>
+    <form id="feedback-form">
+    <label for="name" class="nameLable">Name:</label>
+    <input type="text" id="name" name="name" placeholder="Your Name" required>
+    
+    <label for="email" class="emailLable">Email:</label>
+    <input type="email" id="email" name="email" placeholder="Your Email">
+    <label for="category" categotyLable>Category:</label>
+    <select id="category" name="category" required>
+        <option value="suggestion" class="suggestion" >Suggestion</option>
+        <option value="Bug Report" class="bug-report">Bug Report</option>
+        <option value="General Feedback" class="generalFeedback">General Feedback</option>
+    </select>
+    <label for="message" class="messageLable">Message:</label>
+    <textarea id="message" name="message" placeholder="Your Feedback" required></textarea>
+
+    <button class="feedbackBtn" type="submit">Send Feedback</button>
+</form>
+</section>
+
+  
+    <div class="UnderCredits">
+        
+       <button id="aboutButton" class="link">About Kumusanza</button>
+        <button id="helpButton" class="link">Help</button>
+        <button id="contactButton" class="link">Contact Us</button>
+    </div>
+       
+     <div id="aboutInfo">
+    <h3>Welcome to Kumusanza</h3>
+    <p>Kumusanza is a weather information platform providing accurate and reliable forecasts for Southern Province, Zambia, and other regions around the world. Created as part of a school project by Chisanga Mwaba, a Bachelor of Science student in Electrical and Electronics Engineering, Kumusanza demonstrates the application of web development skills to address real-world challenges.</p>
+    
+    <h3>Mission</h3>
+    <p>Our mission is to provide timely, accurate, and user-friendly weather updates, empowering individuals, farmers, travelers, and decision-makers to plan and make informed choices based on reliable weather data.</p>
+    
+    <h3>Vision</h3>
+    <p>We aim for Kumusanza to become a trusted, global weather resource, while continuing to serve the Southern Province of Zambia, expanding coverage, and providing localized information for communities worldwide.</p>
+    
+    <h3>About the Founder</h3>
+    <p>Chisanga Mwaba is an undergraduate student pursuing a Bachelor of Science in Electrical and Electronics Engineering. With a passion for web development and technology's potential to improve lives, Chisanga developed Kumusanza to showcase how technology can solve everyday problems, specifically in weather information access for the people of Southern Zambia.</p>
+    
+    <h3>Technical Details</h3>
+    <ul>
+        <li>HTML5 for structuring the website's content</li>
+        <li>CSS3 for creating a visually appealing and responsive design</li>
+        <li>JavaScript for adding dynamic features and client-side interactivity</li>
+        <li>OpenWeatherMap API for accurate, up-to-date weather data and icons</li>
+        <li>Background images sourced from Pexels, Unsplash, and Freepik for enhanced visual appeal</li>
+    </ul>
+    
+    <h3>Features and Goals</h3>
+    <ul>
+        <li>Provide accurate, real-time weather forecasts and conditions</li>
+        <li>Allow users to set favorite cities for easy access to weather updates</li>
+        <li>Enable language toggling between English and French</li>
+        <li>Support unit switching between Celsius/Fahrenheit for temperature, and m/s/MPH for wind speed</li>
+        <li>Integrate a dynamic background based on weather conditions for improved user experience</li>
+        <li>Future plans to add more languages, background images, and features like UV index and maps</li>
+    </ul>
+    
+    <p>Thank you for visiting Kumusanza. For more information or assistance, please click <button id="ContactDetails" onclick="toggleContactDetails()">Contact Us</button></p>
+</div>
+    
+   <div id="helpInfo">
+    <h3>How to Use Kumusanza</h3>
+    
+    <h4>Getting Started</h4>
+    <p>Welcome to <strong>Kumusanza, Southern Zambia Weather Hub</strong>! Here, you can view real-time weather updates and forecasts for Southern Province, Zambia, and any city around the world. Simply enter a city name in the search box to get started and view accurate weather data.</p>
+
+    <h4>Main Features</h4>
+<ul>
+    <li><strong>Search for Weather</strong>: Enter a city name in the search box and click "Get Weather" to view the current weather conditions for that city.</li>
+    <li><strong>5-Day Forecast</strong>: Scroll through the “5-Day Forecast” section to see upcoming weather predictions for the next five days, updated every 3 hours.</li>
+    <li><strong>Favourites</strong>: Click "Add to Favorites" to save a city for easy access. View your favorite cities under "Favourites" in the menu.</li>
+    <li><strong>Change Units</strong>: Use the "Change Units" option in the menu to toggle between Celsius and Fahrenheit for temperature as well as meters per second and miles per hour for windspeed.</li>
+    <li><strong>Languages</strong>: Switch between English and French by selecting the language option in the menu. Additional languages may be added in future updates.</li>
+    <li><strong>Dynamic Background</strong>: Enjoy a personalized experience with dynamic background images based on the weather conditions for each city.</li>
+</ul>
+
+<h4>Frequently Asked Questions</h4>
+<p><strong>How often is the weather updated?</strong> Weather data is updated every 3 hours for the forecast and every hour for real-time conditions.</p>
+<p><strong>Can I set a default city?</strong> Yes! Under “Cities” in the menu, you can select and set any city as your default location for easy access.</p>
+<p><strong>Where does the weather data come from?</strong> We use the <a href="https://openweathermap.org" target="_blank"><strong>OpenWeatherMap API</strong></a> for real-time weather data and forecasts.</p>
+<p><strong>Where do the background images come from?</strong> The dynamic background images are sourced from <a href="https://www.pexels.com" target="_blank">Pexels</a>, <a href="https://unsplash.com" target="_blank">Unsplash</a>, and <a href="https://www.freepik.com" target="_blank">Freepik</a>.</p>
+    <h4>Need More Help?</h4>
+    <p>If you have additional questions, feel free to contact us via the “Contact Us” button or reach out to Chisanga Mwaba directly at <strong>+260962802464</strong>.</p>
+</div>
+    
+<div id="contactInfo">  
+    <h3>Contact Details</h3>
+    <p><strong>Name:</strong> Chisanga Mwaba</p>
+    <p><strong>Phone Numbers:</strong> +260962802464 / +260978942242</p>
+    <p><strong>Email:</strong> Chisanga_Mwaba@yahoo.com</p>
+    <p><strong>WhatsApp:</strong> <a href="https://wa.me/+260962802464" target="_blank">Click here to chat</a></p>
+</div>
+    
+   
+   
+    <div class="school-links"> 
+    <li><a href="http://www.icuzambia.net">ICU Zambia</a></li>
+<li><a href="https://www.zrdc.org">ZRDC</a></li>
+    </div> 
+    <footer>   
+ <td><span class="copyright">
+      <p>&copy; 2024 Maamba, Sinazongwe.</p> <p>All rights reserved.</p>
+      <p>Designed and 
+Maintained 
+         By Chisanga Mwaba, </p><p>SIN: 2304288851
+     </p></td>
+ </footer>
+        
+   
+<!-- Leaflet.js JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+        
+        <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
+       <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2"></script>
+</body>
+</html>
