@@ -3,144 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kumusanza</title>
-         <!-- Leaflet.js CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <!-- Google fonts import-->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
-    <!-- style CSS -->
-    <link rel="stylesheet" href="Kumusanza.css">
-    <!-- script -->
-    <script src="Kumusanza.js" defer></script>
+    <title>Kumusanza Weather</title>
+    <link rel="stylesheet" href="land.css">
 </head>
 <body>
-    <div class="headbox">
-    <!-- Hamburger Menu -->
-    <div class="dropdown-menu">
-        <span class="menu-icon" id="menu-icon">&#9776;</span>
-        <div id="menu" class="menu-content">
-            <a href="#" id="homeButton">Home</a>
-           <a href="#" id="favourites-list">Favourites</a>
-            <div id="listOfFavourites"></div>
-            <a href="#" id="unitsLink">Change Units</a>
-            <div id="unitsDropdown" class="unitsDropdown">
-                <ul>
-                    <li>
-                        <button id="imperialBtn">Imperial</button>
-            </li>
-                    <li>
-    <button id="metricBtn">Metric</button> 
-                    </li>
-                </ul>
+    <header>
+        <h1>Welcome to Kumusanza</h1>
+    </header>
+ <p class="welcome-message">
+    Get reliable weather updates for Southern Zambia and beyond.
+</p>
+    <main>
+      
+        <div class="weather-container">
+            <div id="dailyDisplay">
+                <h2>Weather Details</h2>
+                <p>Loading current weather...</p>
             </div>
-            
-           <a href="#" id="languageButton">Languages</a>
-<div id="languageDropdown" class="language-menu">
-    <ul>
-        <li class="language-option" data-lang="en">English</li>
-        <li class="language-option" data-lang="fr">French</li>
-        <li class="language-option" data-lang="ja">Japanese</li>
-    </ul>
-</div>
-        
-            <a href="#" id="citiesLink">Cities</a>
-            <!-- Cities dropdown -->
-           <div id="citiesDropdown" class="cities-menu">
-    <ul id="citiesList"></ul>
-</div>
-            <a href="#" id="resetButton">Reset all Preferences</a>
+            <button id="homeBtn" onclick="redirectToMain()">See detailed weather</button>
         </div>
-    </div>
-<h2>Southern Zambia Weather Hub</h2>
-    </div>
-    <!-- Main Content Container -->
-    <div id="container" class="container">
-        <div class="lining">
-            <span class="align">
-                <span class="subtitle">Kumusanza</span>
-        <div id="time" class="time"></div>
-            </span>
         </div>
-
-        <!-- Search Box for City Weather -->
-        <div class="search-box">
-            <input type="text" id="cityInput" placeholder="Enter a city name">
-            <button class="search-button" id="searchButton" onclick="fetchCityWeather()">Get Weather</button>
-        </div>
-        <div class="loader" aria-label="Loading, please wait">
-    <div></div>
-    <div></div>
-    <div></div>
-</div>
-
-        <!-- Display for Weather Information -->
-        <div id="weatherDisplay" class="weather-display">
-            <h3>Current Weather</h3>
-            <p class="weather-details">Weather details will appear here once a city is selected or geolocation is used.</p>
-        </div>
-       <button class="Fav" id="addToFavouritesButton">Add this City to Favorites</button>
-
-        <!-- Display for weekly Forecast -->
-        <div id="forecastDisplay" class="forecast-display">
-            <h3> 5 Days Forecast (3-hour Intervals)</h3>
-            <div class="forecast-scroll">
-                <!-- Forecast items will be injected here dynamically -->
-            </div>
-        </div>
-    </div>
-   <!-- The Chart -->
-   <div id="forecastGraphContainer">
-  <h3 id="chartHead">5-Day Forecast Chart</h3>
-  <canvas id="forecastChart"></canvas>
-</div>
     <!-- Genral notifications -->
     <div id="notificationContainer" class="notification">
     <span id="notificationMessage"></span>
 </div>
     
-<!-- Confirmation Modal -->
-<div id="confirmationModal" class="modal">
-    <span class="modal-content">
-        <h2 id="confirm">Are you sure you want to reset all preferences?</h2>
-        <div class="modal-buttons">
-            <button id="confirmResetButton">Yes</button>
-            <button id="cancelResetButton">Cancel</button>
-        </div>
-    </span>
-</div>
-
-<!-- Notification container -->
-<div id="notificationContainer" class="notification">
-    <span id="notificationMessage"></span>
-</div>
-   <!-- The map -->
-   <section id="weather-map-container">
-    <h2 class="map-head">Weather Maps</h2>
-    <div id="weather-map"></div> <!-- Map container -->
-</section>
-          <!-- Feedback Section -->
-<section id="feedback">
-    <h2 id="feedbackHead">We Value Your Feedback</h2>
-    <form id="feedback-form">
-    <label for="name" class="nameLable">Name:</label>
-    <input type="text" id="name" name="name" placeholder="Your Name" required>
-    
-    <label for="email" class="emailLable">Email:</label>
-    <input type="email" id="email" name="email" placeholder="Your Email">
-    <label for="category" categotyLable>Category:</label>
-    <select id="category" name="category" required>
-        <option value class="suggestion"="Suggestion">Suggestion</option>
-        <option value="Bug Report" class="bug-report">Bug Report</option>
-        <option value="General Feedback" class="generalFeedback">General Feedback</option>
-    </select>
-    <label for="message" class="messageLable">Message:</label>
-    <textarea id="message" name="message" placeholder="Your Feedback" required></textarea>
-
-    <button class="feedbackBtn" type="submit">Send Feedback</button>
-</form>
-</section>
-
-  
+    </main>
     <div class="UnderCredits">
         
        <button id="aboutButton" class="link">About Kumusanza</button>
@@ -222,22 +110,15 @@
     <li><a href="http://www.icuzambia.net">ICU Zambia</a></li>
 <li><a href="https://www.zrdc.org">ZRDC</a></li>
     </div> 
-    <footer>   
- <td><span class="copyright">Maamba.
-     <p>All Rights Reserved.
-     </p>
-     <p>Designed and 
+
+    <footer>
+        <p>&copy; 2024 Kumusanza. All rights reserved.</p>
+      <p>Designed and 
 Maintained 
          By Chisanga Mwaba, </p><p>SIN: 2304288851
-     </p></td>
- </footer>
-        
-   
-<!-- Leaflet.js JS -->
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-        
-        <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
-       <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2"></script>
+     </p>
+    </footer>
+
+    <script src="land.js"></script>
 </body>
 </html>
