@@ -1,0 +1,238 @@
+.weather-container {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    width: 95%;
+    max-width: 900px;
+    align-items: center;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+    background-color: rgba(250, 250, 250, 0.4) !important;
+}
+#dailyDisplay p, #dailyDisplay h2{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 300px; /* Set a max-width to control the container size */
+    width: 100%;
+    padding: 0 15px; 
+    margin: 0 auto; /* Centers the container horizontally */
+    font-family: 'Open Sans';
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+#landingPage {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: white;
+    text-align: center;
+    animation: fadeIn 2s ease-in-out;
+}
+
+
+.notification {
+    padding: 12px 20px;
+    background-color: #00796b;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 8px;
+    position: fixed;
+    top: 150px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100%);
+    z-index: 5000;
+    opacity: 0; /* Initially hidden */
+    visibility: hidden; /* Initially hidden */
+    transition: transform 0.4s ease, opacity 0.4s ease, visibility 0.4s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Add the 'show' class to make it visible */
+.notification.show {
+    opacity: 0.9;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0); /* Bring it to the center */
+}
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-size: cover;
+    background-position: center;
+    animation: dynamicBackground 30s infinite;
+    transition: background 2s ease-in-out; /* Smooth fading */
+}
+
+@keyframes dynamicBackground {
+    0% { background: url('https://images.unsplash.com/photo-1561470508-fd4df1ed90b2?q=80&w=876&auto=format&fit=crop&ixlib=rb-4.0.3') no-repeat center/cover; }
+    20% { background: url('https://images.unsplash.com/photo-1561553543-e4c7b608b98d?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.0.3') no-repeat center/cover; }
+    40% { background: url('https://images.unsplash.com/photo-1617141869037-a0db4d26b6af?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.0.3') no-repeat center/cover; }
+    60% { background: url('https://images.unsplash.com/photo-1418985991508-e47386d96a71?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.0.3') no-repeat center/cover; }
+    80% { background: url('https://images.pexels.com/photos/2043035/pexels-photo-2043035.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2') no-repeat center/cover; }
+100% { background: url('https://images.unsplash.com/photo-1561470508-fd4df1ed90b2?q=80&w=876&auto=format&fit=crop&ixlib=rb-4.0.3') no-repeat center/cover; }
+}
+
+
+/* Welcome message */
+.welcome-message {
+    margin: 20px auto;
+    font-weight: bold;
+    font-size: 1.5rem; /* Increase the size for impact */
+    font-family: 'Pacifico', cursive; /* Fun cursive font */
+    color: antiquewhite;
+    text-align: center; /* Center the text */
+    text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3); /* More subtle, realistic shadow */
+    max-width: 800px; /* Max width for readability */
+    width: 90%; /* Responsive width */
+    transition: color 0.3s ease; /* Smooth transition for color change */
+    margin-top: 20px; /* Spacing from the top */
+}
+
+header h1 {
+    color: #00796b;
+    margin: 0;
+    font-size: 2.5rem; /* Increase the size for more impact */
+    font-family: 'Roboto', sans-serif; /* A more modern, clean font */
+    font-weight: bold; /* Makes the heading bolder */
+    text-align: center; /* Center-align the text */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Light shadow for depth */
+    letter-spacing: 2px; /* Adds some spacing between letters for readability */
+    padding: 10px 0; /* Adds some padding to make the header more spacious */
+    transition: color 0.3s ease; /* Smooth transition for color change */
+}
+
+header h1:hover {
+    color:#00796c ; 
+    text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.7); 
+}
+
+
+
+
+.weather-container {
+    margin: 20px auto;
+    max-width: 600px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+/* Headings */
+h2, h3, h4 {
+    color: teal; /* Heading color */
+}
+
+/* Buttons */
+#homeBtn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: white;
+    background: linear-gradient(145deg, #00796b, #004d40);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+footer {
+    background: teal;
+    color: white;
+    padding: 10px;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.UnderCredits {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 15px;
+    border-top: 1px solid #ddd;
+    flex-wrap: wrap;
+}
+
+.link {
+    padding: 8px 16px;
+    font-size: 14px;
+    color: #333;
+    background-color: #e0e0e0;
+    border-radius: 6px;
+    transition: transform 0.2s, background-color 0.2s;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+}
+
+.link:hover {
+    transform: translateY(-2px);
+    background-color: #0056b3;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#aboutInfo, #helpInfo, #contactInfo {
+    display: none;
+    position: relative;
+    background-color: #f1f1f1;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 8px;
+    max-width: 700px;
+    color: #333;
+    font-size: 15px;
+    line-height: 1.6;
+    overflow-y: auto;
+    border: 1px solid teal;
+    width: 90%;
+    max-height: 400px;
+}
+
+@media (max-width: 768px) {
+    .UnderCredits {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .link {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+
+    #aboutInfo, #helpInfo, #contactInfo {
+        max-width: 100%;
+        width: auto;
+        left: 0;
+    }
+}
+
+.school-links{
+    text-align: left;
+}
