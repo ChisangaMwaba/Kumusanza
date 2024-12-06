@@ -809,14 +809,6 @@ function toggleListOfFavourites() {
             listDiv.style.display = "none";
         }
     });
-
-document.getElementById('addToFavouritesButton').addEventListener('click', () => {
-    if (currentWeatherData) {
-        addCurrentCityToFavourites(currentWeatherData);
-    } else {
-        showNotification("No city data available. Please fetch weather information first.");
-    }
-});
 }
 
 // Add the current city to the favorites list
