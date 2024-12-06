@@ -992,6 +992,7 @@ input[type="text"] {
 
 /* Modal Styles */
 .modal {
+    text-align: center;
     display: show; /* Ensure modal is hidden by default */
     position: fixed;
     top: 50%;
@@ -1048,6 +1049,7 @@ input[type="text"] {
     background-color: #e53935;
 }
 .notification {
+    text-align: center;
     padding: 12px 20px;
     background-color: #00796b;
     color: white;
