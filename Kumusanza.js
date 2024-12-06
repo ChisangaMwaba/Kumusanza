@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Favourites event listeners
         const addToFavouritesButton = document.getElementById('addToFavouritesButton');
-    const favouritesList = document.getElementById('favourites-list');
+    const favouritesList = document.getElementById('favouritesList');
     addToFavouritesButton?.addEventListener('click', addCurrentCityToFavourites);
     favouritesList?.addEventListener('click', toggleListOfFavourites);
 
@@ -801,10 +801,14 @@ function toggleListOfFavourites() {
 
     // Close the list if clicked outside
     document.addEventListener('click', (event) => {
-    if (!event.target.closest('#listOfFavourites') && event.target.textContent !== "Favourites") {
-        listDiv.style.display = "none";
-    }
-});
+        // Check if the clicked element is inside the list or the favourites button
+        const clickedInsideList = event.target.closest('#listOfFavourites');
+        const clickedFavouritesButton = event.target.closest('#favouritesList');
+
+        if (!clickedInsideList && !clickedFavouritesButton) {
+            listDiv.style.display = "none";
+        }
+    });
 
 document.getElementById('addToFavouritesButton').addEventListener('click', () => {
     if (currentWeatherData) {
@@ -1082,6 +1086,9 @@ const translations = {
 document.addEventListener("DOMContentLoaded", () => {
     const translations = {
         en: {
+            english: "English",
+            french: "French",
+            japanese: "Japanese",
             cancelResetButton: "Cancel",
             confirmResetButton: "Yes",
             confirm: "Are you sure you want to reset all preferences?",
@@ -1113,6 +1120,9 @@ document.addEventListener("DOMContentLoaded", () => {
             searchButton: "Get Weather",
         },
         fr: {
+            english: "Anglais",
+            french: "Français",
+            japanese: "Japonais",
             searchButton: "obtenir la météo",
             cancelResetButton: "Annuler",
             confirmResetButton: "Oui",
@@ -1144,6 +1154,9 @@ document.addEventListener("DOMContentLoaded", () => {
             feedbackBtn: "Envoyer des commentaires",
         },
         ja: {
+            english: "英語",
+            french: "フランス語",
+            japanese: "日本語",
             searchButton: "天気を取得する",
             cancelResetButton: "キャンセル",
             confirmResetButton: "はい",
@@ -1179,46 +1192,60 @@ document.addEventListener("DOMContentLoaded", () => {
     const defaultLanguage = "en";
 
     // Function to translate the page
-    const translatePage = (lang) => {
-        const elements = {
-            searchButton: document.getElementById("searchButton"),
-            confirmResetButton: document.getElementById("confirmResetButton"),
-            cancelResetButton: document.getElementById("cancelResetButton"),
-            confirm: document.getElementById("confirm"),
-            resetButton: document.getElementById("resetButton"),
-            homeButton: document.getElementById("homeButton"),
-            favouritesList: document.getElementById("favourites-list"),
-            unitsLink: document.getElementById("unitsLink"),
-            imperialBtn: document.getElementById("imperialBtn"),
-            metricBtn: document.getElementById("metricBtn"),
-            languageButton: document.getElementById("languageButton"),
-            citiesLink: document.getElementById("citiesLink"),
-            addToFavouritesButton: document.getElementById("addToFavouritesButton"),
-            aboutButton: document.getElementById("aboutButton"),
-            helpButton: document.getElementById("helpButton"),
-            contactButton: document.getElementById("contactButton"),
-            chartHead: document.getElementById("chartHead"),
-            mapHead: document.querySelector(".map-head"),
-            feedbackHead: document.getElementById("feedbackHead"),
-            nameLabel: document.querySelector(".nameLable"),
-            emailLabel: document.querySelector(".emailLable"),
-            categoryLabel: document.querySelector("[for='category']"),
-            suggestionOption: document.querySelector("[value='Suggestion']"),
-            bugReportOption: document.querySelector("[value='Bug Report']"),
-            generalFeedbackOption: document.querySelector("[value='General Feedback']"),
-            messageLabel: document.querySelector(".messageLable"),
-            feedbackBtn: document.querySelector(".feedbackBtn"),
-        };
-
-        Object.keys(elements).forEach((key) => {
-            if (elements[key]) {
-                elements[key].textContent = translations[lang][key];
-            }
-        });
-
-        document.querySelector("h3").textContent = translations[lang].currentWeather;
-        document.querySelector("#forecastGraphContainer h3").textContent = translations[lang].weeklyForecast;
+   const translatePage = (lang) => {
+    const elements = {
+        english: document.getElementById("english"),
+        french: document.getElementById("french"),
+        japanese: document.getElementById("japanese"),
+        searchButton: document.getElementById("searchButton"),
+        confirmResetButton: document.getElementById("confirmResetButton"),
+        cancelResetButton: document.getElementById("cancelResetButton"),
+        confirm: document.getElementById("confirm"),
+        resetButton: document.getElementById("resetButton"),
+        homeButton: document.getElementById("homeButton"),
+        favouritesList: document.getElementById("favouritesList"),
+        unitsLink: document.getElementById("unitsLink"),
+        imperialBtn: document.getElementById("imperialBtn"),
+        metricBtn: document.getElementById("metricBtn"),
+        languageButton: document.getElementById("languageButton"),
+        citiesLink: document.getElementById("citiesLink"),
+        addToFavouritesButton: document.getElementById("addToFavouritesButton"),
+        aboutButton: document.getElementById("aboutButton"),
+        helpButton: document.getElementById("helpButton"),
+        contactButton: document.getElementById("contactButton"),
+        chartHead: document.getElementById("chartHead"),
+        mapHead: document.querySelector(".map-head"),
+        feedbackHead: document.getElementById("feedbackHead"),
+        nameLabel: document.querySelector(".nameLable"),
+        emailLabel: document.querySelector(".emailLable"),
+        categoryLabel: document.querySelector("[for='category']"),
+        suggestionOption: document.querySelector("[value='Suggestion']"),
+        bugReportOption: document.querySelector("[value='Bug Report']"),
+        generalFeedbackOption: document.querySelector("[value='General Feedback']"),
+        messageLabel: document.querySelector(".messageLable"),
+        feedbackBtn: document.querySelector(".feedbackBtn"),
     };
+
+    // Update text content while preserving emojis for language options
+    const languageOptions = ["english", "french", "japanese"];
+    languageOptions.forEach((key) => {
+        const element = elements[key];
+        if (element) {
+            element.childNodes[0].nodeValue = translations[lang][key] + " ";
+        }
+    });
+
+    // Update other elements
+    Object.keys(elements).forEach((key) => {
+        if (elements[key] && !languageOptions.includes(key)) {
+            elements[key].textContent = translations[lang][key];
+        }
+    });
+
+    // Update additional elements
+    document.querySelector("h3").textContent = translations[lang].currentWeather;
+    document.querySelector("#forecastGraphContainer h3").textContent = translations[lang].weeklyForecast;
+};
 
     document.querySelectorAll(".language-option").forEach((option) => {
         option.addEventListener("click", () => {
