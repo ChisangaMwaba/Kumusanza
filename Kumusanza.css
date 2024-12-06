@@ -467,11 +467,20 @@ body {
     padding: 5px 10px;
     cursor: pointer;
 }
+.language-menu li:last-of-type {
+    border-bottom: none;
+    
+}
 
 .language-menu li:hover {
     background-color: #f0f0f0;
 }
-
+.emoji {
+    
+width: 40px;
+    height: auto;
+    filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.5)); /* Adds a subtle shadow */
+}
 
 .unitsDropdown{
     text-align: justify;
@@ -590,7 +599,7 @@ body {
 }
 
 .container.snowy {
-    background-image: url('https://images.unsplash.com/photo-1548777123-e216912df7d8?q=80&w=1035&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    background-image: url('https://images.pexels.com/photos/2086620/pexels-photo-2086620.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
     background-position: center;
     background-size: cover;
 }
@@ -964,11 +973,13 @@ input[type="text"] {
 }
 
 .school-links {
+    margin-bottom: 25px;
     padding: 10px;
     margin-top: 40px;
     text-align: left;
 }
-footer{
+
+.copyright{
     border-top: 1px solid teal;
     padding: 15px;
     text-align: center;
