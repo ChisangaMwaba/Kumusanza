@@ -545,7 +545,8 @@ async function getUserLocation() {
     } catch (error) {
         console.error('Geolocation error:', error);
         showNotification("Unable to retrieve your location. Showing weather for default city.");
-        await getWeather(defaultLocation); // Fallback to default city if geolocation fails
+        await getWeather(defaultLocation);// Fallback to default city if geolocation fails
+        cityName=defaultLocation;
     } finally {
         hideLoader(); // Hide loader after fetching weather or error handling
     }
@@ -809,6 +810,7 @@ function toggleListOfFavourites() {
             listDiv.style.display = "none";
         }
     });
+
 }
 
 // Add the current city to the favorites list
@@ -1287,14 +1289,14 @@ function renderCities() {
             <button class="set-default-btn">Set as Default</button>
         `;
         citiesList.appendChild(listItem);
+        cityName=city;
     });
 }
-
 // Event delegation: Adding event listeners to dynamically generated elements
 document.getElementById('citiesDropdown').addEventListener('click', function(event) {
     // Check if the clicked element is a city name or 'Set as Default' button
     if (event.target.classList.contains('city-name')) {
-        const cityName = event.target.textContent;
+        cityName = event.target.textContent;
         getWeather(cityName); // Fetch weather for the selected city
     } else if (event.target.classList.contains('set-default-btn')) {
         const cityName = event.target.previousElementSibling.textContent;
