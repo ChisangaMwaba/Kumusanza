@@ -446,6 +446,7 @@ body {
 
 
 .language-menu {
+    text-align: left;
     display: none;
     position: absolute;
     background-color: white;
@@ -475,11 +476,11 @@ body {
 .language-menu li:hover {
     background-color: #f0f0f0;
 }
-.emoji {
-    
-width: 40px;
+
+.fi {
+width: 30px;
     height: auto;
-    filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.5)); /* Adds a subtle shadow */
+    filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.5));
 }
 
 .unitsDropdown{
@@ -630,7 +631,7 @@ width: 40px;
 }
 
 .container.cloudy {
-    background-image: url('https://img.freepik.com/free-photo/beautiful-skyscape-daytime_23-2149265589.jpg?t=st=1730973843~exp=1730977443~hmac=d1bd062b443ba27b6e9c744a6eaf2a9c01013f28ae82ed3c5808a46e97632eb0&w=1060');
+    background-image: url('https://images.pexels.com/photos/8648188/pexels-photo-8648188.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
     background-position: center;
     background-size: cover;
 }
@@ -1079,26 +1080,39 @@ input[type="text"] {
     text-align: center;
 }
 
-.subtitle{
+.subtitle {
     text-align: center;
-    color: #00796b;
+    color: #ffffff;
     font-family: 'Pacifico', cursive;
-    font-size: 2em;
+    font-size: 2.1em;
     text-transform: uppercase;
     letter-spacing: 5px;
-    text-shadow: 3px 3px 3px rgba(10, 50, 90, 0.8);
-    font-weight: 1000;
-    background-color: transparent;  /* Normal background (no fill) */
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.6);
+    font-weight: 900;
+    padding: 10px 20px;
+    border-radius: 8px;
     display: inline-block;
-    
+    overflow: hidden; /* Ensures no weird overflow from animation */
+}
+
+.subtitle span {
+    display: inline-block;
+    animation: crazyWave 1.5s ease-in-out 3;
+}
+
+@keyframes crazyWave {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
 }
 
 h2 {
     font-size: 17px;
     font-weight: 500;
-    color: #004d40;  /* Slightly darker shade of green */
+    color: #004d40;  
     letter-spacing: 0.25px;
     text-transform: uppercase;
     text-align: center;
