@@ -30,6 +30,14 @@ function init() {
     startClock();
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+    const subtitle = document.querySelector(".subtitle");
+    const text = subtitle.textContent;
+    subtitle.innerHTML = [...text].map(
+        (letter, index) =>
+            `<span style="animation-delay: ${index * 0.1}s">${letter}</span>`
+    ).join("");
+});
 
 document.addEventListener("DOMContentLoaded", function () {
     // Initialize EmailJS
@@ -69,7 +77,7 @@ function preloadBackgroundImages() {
         'https://images.unsplash.com/photo-1492011221367-f47e3ccd77a0?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         'https://images.pexels.com/photos/2144326/pexels-photo-2144326.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
         'https://img.freepik.com/free-photo/vertical-shot-thick-green-trees-calm-sky-with-few-clouds_181624-7403.jpg?t=st=1730970666~exp=1730974266~hmac=d8132430bcae602cfb45a169c8046af52e8a84ec68f1ecb595ce37acfdbfa9b2&w=1060',
-        'https://img.freepik.com/free-photo/beautiful-skyscape-daytime_23-2149265589.jpg?t=st=1730973843~exp=1730977443~hmac=d1bd062b443ba27b6e9c744a6eaf2a9c01013f28ae82ed3c5808a46e97632eb0&w=1060'
+        'https://images.pexels.com/photos/8648188/pexels-photo-8648188.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
     ];
 
     imageUrls.forEach(url => {
