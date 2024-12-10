@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Show notification if a default city is set
     if (defaultLocation) {
-        showNotification(`${defaultLocation} has been successfully set as default.`);
+        showNotification(`Your default city is set to ${defaultLocation}`);
     }
 
     // Set up event listeners for unit toggles
