@@ -755,6 +755,7 @@ width: 30px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px; 
     font weight: bold;
+    vertical-align: middle;
 }
 
 /* Animation for a subtle pulsing effect */
@@ -1132,7 +1133,8 @@ input[type="text"] {
     padding: 10px 20px;
     border-radius: 8px;
     display: inline-block;
-    overflow: hidden; /* Ensures no weird overflow from animation */
+    overflow: hidden;
+    vertical-align: middle;
 }
 
 .subtitle span {
