@@ -1,5 +1,4 @@
-const ApiKey = "cd8161af3d4a4608f689e4dc5f2613dc"; 
-
+const ApiKey = "f64759d952957a1deb23dd198ffefd1c"; 
 // Preload images
 const preloadImages = [
     'https://images.unsplash.com/photo-1561470508-fd4df1ed90b2?q=80&w=876&auto=format&fit=crop&ixlib=rb-4.0.3',
@@ -11,14 +10,13 @@ const preloadImages = [
 
 let loadedImages = 0;
 
-// Preload images
 preloadImages.forEach((src) => {
     const img = new Image();
     img.src = src;
     img.onload = () => {
         loadedImages++;
         if (loadedImages === preloadImages.length) {
-            document.body.classList.add('background-ready'); // Start animation
+            document.body.classList.add('background-ready');
         }
     };
 });
