@@ -1,6 +1,6 @@
 const ApiKey = "cd8161af3d4a4608f689e4dc5f2613dc"; // Replace with your OpenWeatherMap API key
 
-// Preload background images
+// Preload images
 const preloadImages = [
     'https://images.pexels.com/photos/2043035/pexels-photo-2043035.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
     'https://images.unsplash.com/photo-1561470508-fd4df1ed90b2?q=80&w=876&auto=format&fit=crop&ixlib=rb-4.0.3',
@@ -9,10 +9,21 @@ const preloadImages = [
     'https://images.unsplash.com/photo-1418985991508-e47386d96a71?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.0.3'
 ];
 
+let loadedImages = 0;
+
+// Track when all images are loaded
 preloadImages.forEach((src) => {
     const img = new Image();
     img.src = src;
+    img.onload = () => {
+        loadedImages++;
+        if (loadedImages === preloadImages.length) {
+            document.body.classList.add('background-ready');
+        }
+    };
 });
+
+
 // Initialization function
 function initPage() {
     if (navigator.geolocation) {
