@@ -1,4 +1,4 @@
-const ApiKey = "cd8161af3d4a4608f689e4dc5f2613dc"; // Replace with your OpenWeatherMap API key
+const ApiKey = "cd8161af3d4a4608f689e4dc5f2613dc"; 
 
 // Preload images
 const preloadImages = [
