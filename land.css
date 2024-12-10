@@ -16,7 +16,7 @@
 #dailyDisplay p, #dailyDisplay h2{
     justify-content: space-between;
     align-items: center;
-    max-width: 300px; /* Set a max-width to control the container size */
+    max-width: 300px; 
     width: 100%;
     padding: 0 15px; 
     margin: 0 auto; /* Centers the container horizontally */
@@ -39,8 +39,8 @@
     left: 50%;
     transform: translateX(-50%) translateY(-100%);
     z-index: 5000;
-    opacity: 0; /* Initially hidden */
-    visibility: hidden; /* Initially hidden */
+    opacity: 0;
+    visibility: hidden; 
     transition: transform 0.4s ease, opacity 0.4s ease, visibility 0.4s ease;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
@@ -258,7 +258,15 @@ footer {
         left: 20px;
     }
 }
+.school-links{text-align: left;
+    margin: 20px;
+}
 
-.school-links{
-    text-align: left;
+.school-links a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+.school-links a:hover {
+    color: #0056b3;
 }
