@@ -1,5 +1,5 @@
 //OpenWeatherMap API key
-const weatherApiKey = 'cd8161af3d4a4608f689e4dc5f2613dc';
+const weatherApiKey = '06147f9752f123b064167f9eac793ef6';
 
 // Default settings for units and location
 const unitsConfig = {
@@ -22,7 +22,6 @@ let currentLanguage = "en"; // Default language
  // Initialization tasks
 document.addEventListener('DOMContentLoaded', init);
 
-// Initialization tasks
 function init() {
     updateFavouritesList();
     startClock();
@@ -84,7 +83,7 @@ function preloadBackgroundImages() {
     });
 }
 
-// Call the function to preload the images
+// Function to preload the images
 document.addEventListener('DOMContentLoaded', preloadBackgroundImages);
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -533,7 +532,7 @@ var temperatureSymbol = temperatureUnit === 'metric' ? '°C' : '°F';
                 data: temperatures.data,
                 borderColor: '#00796b',
                 backgroundColor: 'rgba(0, 121, 107, 0.2)',
-                borderWidth: 2
+                borderWidth: 1.5
             }]
         },
         options: {
