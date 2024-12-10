@@ -19,8 +19,6 @@ let currentWeatherData = null;
 let forecastChart = null;
 let currentLanguage = "en"; // Default language
 
-document.addEventListener('DOMContentLoaded', init);
-
  // Initialization tasks
 document.addEventListener('DOMContentLoaded', init);
 
@@ -143,6 +141,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Render cities
     renderCities();
 
+    // Get the default location from localStorage
+    const defaultLocation = localStorage.getItem('defaultLocation');
+
+    // Show notification if a default city is set
+    if (defaultLocation) {
+        showNotification(`${defaultLocation} has been successfully set as default.`);
+    }
+
     // Set up event listeners for unit toggles
     document.getElementById('imperialBtn')?.addEventListener('click', setImperialUnits);
     document.getElementById('metricBtn')?.addEventListener('click', setMetricUnits);
@@ -150,7 +156,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const unitsLink = document.getElementById("unitsLink");
     unitsLink?.addEventListener('click', toggleUnits);
 
-    // Get user location (await if it's asynchronous)
+    // Get user location
     await getUserLocation();
 
     // Home button event listener
@@ -163,7 +169,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     menuIcon?.addEventListener('click', toggleMenu);
 
     // Favourites event listeners
-        const addToFavouritesButton = document.getElementById('addToFavouritesButton');
+    const addToFavouritesButton = document.getElementById('addToFavouritesButton');
     const favouritesList = document.getElementById('favouritesList');
     addToFavouritesButton?.addEventListener('click', addCurrentCityToFavourites);
     favouritesList?.addEventListener('click', toggleListOfFavourites);
@@ -290,28 +296,77 @@ function displayCurrentWeather(cityName, data) {
     
     // Update the weatherDisplay container
     weatherDisplay.innerHTML = `
-    <h3>${translate('currentWeather')} ${cityName}</h3>
-    <div class="weather-details">
-        <span class="top-display">
-            <span class="weather-icon">
-                <img src="${iconUrl}" alt="Weather icon" />
-            </span>
-            <span class="temperature">${data.main.temp}${temperatureSymbol}</span>
+<h3>${translate('currentWeather')} ${cityName}</h3>
+<div class="weather-details">
+    <span class="top-display">
+        <span class="weather-icon">
+            <img src="${iconUrl}" alt="Weather icon" />
         </span>
+        <span class="temperature">${data.main.temp}${temperatureSymbol}</span>
+    </span>
+</div>
+<div class="weather-details">
+    <div class="subject">
+        <i class="fas fa-thermometer-half"></i> ${translate('feelsLike')}:
     </div>
-    <div class="weather-details"><div class = "subject">${translate('feelsLike')}:</div> <div class = "object">${feelsLike}${temperatureSymbol}</div></div>
-    <div class="weather-details"><div class = "subject">${translate('condition')}:</div> <div class = "object">${data.weather[0]?.description || 'N/A'}</div></div>
-    <div class="weather-details"><div class = "subject">${translate('humidity')}:</div> <div class = "object">${data.main?.humidity}%</div></div>
-    <div class="weather-details"><div class = "subject">${translate('pressure')}:</div> <div class = "object">${pressureValue} ${pressureUnit}</div></div>
-    <div class="weather-details"><div class = "subject">${translate('cloudiness')}:</div> <div class = "object">${cloudiness}%</div></div>
-    <div class="weather-details"><div class = "subject">${translate('windSpeed')}:</div> <div class = "object">${data.wind?.speed} ${windSpeed}</div></div>
-    <div class="weather-details"><div class = "subject">${translate('windDirection')}:</div> <div class = "object">${windDirection}</div></div>
-    <div class="weather-details"><div class = "subject">${translate('sunrise')}:</div> <div class = "object">${sunrise}</div></div>
-    <div class="weather-details"><div class = "subject">${translate('sunset')}:</div> <div class = "object">${sunset}</div></div>
-    <div class="weather-details"><div class = "subject">${translate('localTime')}:</div> <div class = "object">${cityTime}</div></div>
-    `;
+    <div class="object">${feelsLike}${temperatureSymbol}</div>
+</div>
+<div class="weather-details">
+    <div class="subject">
+        <i class="fas fa-cloud"> </i> ${translate('condition')}:
+    </div>
+    <div class="object">${data.weather[0]?.description || 'N/A'}</div>
+</div>
+<div class="weather-details">
+    <div class="subject">
+        <i class="fas fa-tint"> </i> ${translate('humidity')}:
+    </div>
+    <div class="object">${data.main?.humidity}%</div>
+</div>
+<div class="weather-details">
+    <div class="subject">
+        <i class="fas fa-tachometer-alt"> </i> ${translate('pressure')}:
+    </div>
+    <div class="object">${pressureValue} ${pressureUnit}</div>
+</div>
+<div class="weather-details">
+    <div class="subject">
+        <i class="fas fa-cloud-sun"></i> ${translate('cloudiness')}:
+    </div>
+    <div class="object">${cloudiness}%</div>
+</div>
+<div class="weather-details">
+    <div class="subject">
+        <i class="fas fa-wind"></i> ${translate('windSpeed')}:
+    </div>
+    <div class="object">${data.wind?.speed} ${windSpeed}</div>
+</div>
+<div class="weather-details">
+    <div class="subject">
+        <i class="fas fa-compass"></i> ${translate('windDirection')}:
+    </div>
+    <div class="object">${windDirection}</div>
+</div>
+<div class="weather-details">
+    <div class="subject">
+        <i class="fas fa-sun"></i> ${translate('sunrise')}:
+    </div>
+    <div class="object">${sunrise}</div>
+</div>
+<div class="weather-details">
+    <div class="subject">
+        <i class="fas fa-moon"></i> ${translate('sunset')}:
+    </div>
+    <div class="object">${sunset}</div>
+</div>
+<div class="weather-details">
+    <div class="subject">
+        <i class="fas fa-clock"></i> ${translate('localTime')}:
+    </div>
+    <div class="object">${cityTime}</div>
+</div>
+`;
 }
-
 
 // Fetch 5-day forecast in 3-hour intervals using city coordinates (lat, lon)
 async function fetch5DayForecast(lat, lon) {
@@ -751,6 +806,7 @@ function setDefaultLocation(location) {
       cityName = location;
     // Show the success notification that the city has been set as default
     showNotification(`${location} has been successfully set as default.`);
+    renderCities();
 }
 
 
@@ -1281,8 +1337,8 @@ document.addEventListener('click', function(event) {
 // List of cities (this can be expanded or fetched from a server in the future)
 const cities = [
    'Chikankata', 'Chirundu', 'Choma', 'Gwembe', 'Mukuni', 
-    'Chisekesi', 'Kazungula', 'Livingstone', 'Mazabuka', 'Monze', 
-    'Namwala', 'Pemba', 'Siavonga', 'Sinazongwe', 'Maamba', 'Sinazeze', 'Zimba','Lusaka'
+   'Chisekesi', 'Kazungula', 'Livingstone', 'Mazabuka', 'Monze', 
+   'Namwala', 'Pemba', 'Siavonga', 'Sinazongwe', 'Maamba', 'Sinazeze', 'Zimba', 'Lusaka'
 ];
 
 // Function to render the list of cities
@@ -1290,27 +1346,43 @@ function renderCities() {
     const citiesList = document.getElementById('citiesList');
     citiesList.innerHTML = ''; // Clear existing list (if any)
 
+    if (cities.length === 0) {
+        citiesList.innerHTML = '<p>No cities available.</p>';
+        return;
+    }
+
+    // Retrieve the default city from localStorage
+    const defaultLocation = localStorage.getItem('defaultLocation');
+
     cities.forEach(city => {
         const listItem = document.createElement('li');
-        listItem.innerHTML = `
+        
+        // Render city name
+        const cityNameHTML = `
             <span class="city-name">${city}</span>
-            <button class="set-default-btn">Set as Default</button>
+            ${defaultLocation === city ? '<span class="default-indicator"><i class="fas fa-check"></i> Default</span>' : ''}
         `;
+
+        // Only show the "Set as Default" button if it's not the default city
+        const buttonHTML = defaultLocation === city ? '' : `
+            <button class="set-default-btn" aria-label="Set ${city} as default">Set as Default</button>
+        `;
+
+        listItem.innerHTML = cityNameHTML + buttonHTML;
         citiesList.appendChild(listItem);
-        cityName=city;
     });
 }
-// Event delegation: Adding event listeners to dynamically generated elements
-document.getElementById('citiesDropdown').addEventListener('click', function(event) {
-    // Check if the clicked element is a city name or 'Set as Default' button
+// Event delegation for dynamically generated elements
+document.getElementById('citiesList').addEventListener('click', function(event) {
     if (event.target.classList.contains('city-name')) {
-        cityName = event.target.textContent;
+        const cityName = event.target.textContent;
         getWeather(cityName); // Fetch weather for the selected city
     } else if (event.target.classList.contains('set-default-btn')) {
         const cityName = event.target.previousElementSibling.textContent;
         setDefaultLocation(cityName); // Set selected city as default
     }
 });
+
 
 // Function to show the notification
 function showNotification(message) {
