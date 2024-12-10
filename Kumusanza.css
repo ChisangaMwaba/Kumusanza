@@ -1,89 +1,89 @@
 /* General legend container styling */
 .info.legend {
-    position: absolute; /* Allows dynamic placement */
-    top: 10px; /* Adjust vertical position */
-    left: 10px; /* Adjust horizontal position */
-    background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
-    border: 1px solid #ccc; /* Subtle border */
-    border-radius: 8px; /* Rounded corners */
-    padding: 10px; /* Space around content */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Drop shadow for elevation */
-    z-index: 1000; /* Ensures it's above other elements */
-    font-size: 13px; /* Readable font size */
-    color: #333; /* Neutral text color */
-    max-width: 300px; /* Reasonable max width for the legend */
-    word-wrap: break-word; /* Wrap long text */
-    box-sizing: border-box; /* Includes padding and border in dimensions */
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    font-size: 13px;
+    color: #333;
+    max-width: 300px;
+    word-wrap: break-word;
+    box-sizing: border-box;
 }
 
 /* Title styling */
 .info.legend h4 {
-    margin: 0 0 10px; /* Space below the title */
-    font-weight: bold; /* Emphasized title */
-    font-size: 14px; /* Slightly larger font for the title */
-    text-align: left; /* Ensure title alignment */
+    margin: 0 0 10px;
+    font-weight: bold;
+    font-size: 14px;
+    text-align: left;
 }
 
 /* Styling for each legend item (color box + text) */
 .info.legend div {
-    display: flex; /* Use flexbox to align items side by side */
-    align-items: center; /* Vertically align items in the center */
-    margin-bottom: 5px; /* Space between legend rows */
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
 }
 
-/* Align icons (color boxes) */
+/* Align icons */
 .info.legend i {
-    width: 18px; /* Fixed width for color box */
-    height: 18px; /* Fixed height for color box */
-    display: inline-block; /* Keep icons inline */
-    margin-right: 8px; /* Space between icon and text */
-    vertical-align: middle; /* Align icon with text */
-    border-radius: 3px; /* Rounded corners for icons */
-    opacity: 0.8; /* Slight transparency for icons */
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+    margin-right: 8px;
+    vertical-align: middle;
+    border-radius: 3px;
+    opacity: 0.8;
 }
 
 /* Styling for text next to color boxes */
 .info.legend span {
     display: inline-block;
     text-align: left;
-    white-space: nowrap; /* Prevent text from wrapping if it exceeds space */
+    white-space: nowrap;
 }
 
 /* Style for the box containing the weather information and icon */
 .marker {
-    background-color: rgba(224, 247, 250, 0.4); /* Semi-transparent black background */
-    color: teal; /* White text color */
-    padding: 10px 15px; /* Padding for spacing */
-    border-radius: 20px; /* Rounded corners */
-    box-shadow: 0px 4px 12px rgba(169, 169, 169, 0.3); /* Subtle shadow for the box */
-    font-family: Arial, sans-serif; /* Font for the text */
+    background-color: rgba(224, 247, 250, 0.4);
+    color: teal;
+    padding: 10px 15px;
+    border-radius: 20px;
+    box-shadow: 0px 4px 12px rgba(169, 169, 169, 0.3);
+    font-family: Arial, sans-serif;
     display: flex;
     align-items: center;
-    max-width: 200px; /* Optional: set a max width for the tooltip box */
-    position: absolute; /* Ensure it sits above the map */
-    z-index: 1000; /* Ensure it shows on top of the map */
-    transition: all 0.3s ease; /* Smooth transition for hover and positioning */
+    max-width: 200px;
+    position: absolute;
+    z-index: 1000;
+    transition: all 0.3s ease;
 }
 
 /* Style for the image inside the tooltip box */
 .marker img {
-    filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.5)); /* Subtle shadow for the icon */
-    width: 30px; /* Icon width */
-    height: 30px; /* Icon height */
-    margin-right: 8px; /* Space between icon and text */
-    transition: filter 0.3s ease; /* Smooth transition for shadow */
+    filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.5));
+    width: 30px;
+    height: 30px;
+    margin-right: 8px;
+    transition: filter 0.3s ease;
 }
 
 /* Stronger shadow effect on hover */
 .marker img:hover {
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.5); /* Stronger shadow on hover */
-    filter: drop-shadow(3px 3px 8px rgba(0, 0, 0, 0.7)); /* Stronger shadow on hover */
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.5);
+    filter: drop-shadow(3px 3px 8px rgba(0, 0, 0, 0.7));
 }
 
 /* Style for the text in the tooltip */
 .marker div {
-    font-size: 14px; /* Adjust text size */
-    line-height: 1.2; /* Space between lines */
+    font-size: 14px;
+    line-height: 1.2;
 }
 
 
@@ -106,6 +106,7 @@
 }
 
 .map-head {
+    font-weight: 800;
     text-transform: capitalize;
     font-size: 1.5rem;
     color: #00796b;
@@ -261,14 +262,18 @@
 }
 
 #forecastGraphContainer {
-    padding: 2rem;
-    margin: 1rem auto;
+    padding: 5%;
+    margin: 10px auto;
     max-width: 800px;
     background: linear-gradient(to bottom, #f0fcfd, #e0f7fa);
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
     border-radius: 12px;
     transition: all 0.3s ease-in-out;
     transform: translateY(0);
+}
+#forecastGraphContainer:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
 }
 
 #forecastGraphContainer h3 {
@@ -1015,21 +1020,49 @@ input[type="text"] {
 }
 
 .school-links {
+    margin: 15px;
     margin-bottom: 25px;
     padding: 10px;
     margin-top: 40px;
     text-align: left;
 }
+.school-links a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+.school-links a:hover {
+    color: #0056b3;
+}
 
-.copyright{
-    border-top: 1px solid teal;
+.copyright {
     padding: 15px;
     text-align: center;
-    overflow-x: ;
+    background-color: #f8f9fa; /* Light gray background */
+    color: #343a40; /* Dark text for contrast */
+    font-size: 0.9rem; /* Slightly smaller text */
+    border-top: 1px solid #dee2e6; /* Subtle border at the top */
+    overflow-x: hidden; /* Prevent horizontal overflow issues */
 }
 
 .copyright p {
-    margin-top: 10px;
+    margin: 5px 0; /* Reduce spacing for cleaner look */
+    line-height: 1.5; /* Improve readability */
+}
+
+.copyright a {
+    color: #007bff; /* Blue links */
+    text-decoration: none; /* Remove underline */
+    transition: color 0.3s ease; /* Smooth color change on hover */
+}
+
+.copyright a:hover {
+    color: #0056b3; /* Darker blue on hover */
+}
+
+/* Optional: Add a subtle hover effect for the entire copyright section */
+.copyright:hover {
+    background-color: #e9ecef; /* Slightly darker background on hover */
 }
 
 /* Modal Styles */
