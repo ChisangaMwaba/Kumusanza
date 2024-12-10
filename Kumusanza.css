@@ -328,12 +328,12 @@
 }
 
 .subject {
-    flex: 0 0 120px; 
+    flex: 0 0 140px; 
     text-align: left;
 }
 
 .object {
-    flex: 0 0 120px;
+    flex: 0 0 125px;
     text-align: right;
 }
 
@@ -702,26 +702,6 @@ width: 30px;
 }
 
 
-/* Button styles */
-.search-button {
-    background: linear-gradient(145deg, #00796b, #004d40); /* Teal gradient */ color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
-
-.search-button:hover {
-    background-color: #004d40; /* Darker teal on hover */
-}
-/* Input styles */
-input[type="text"] {
-    width: calc(100% - 22px);
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
 
 .forecast-item {
     opacity: 0.75;
@@ -782,7 +762,61 @@ input[type="text"] {
     }
 }
 
+/* Styling for the search box */
+.search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    max-width: 400px;
+    margin: 20px auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
 
+/* Input field */
+#cityInput {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 10px 10px 10px 35px; /* Leave space for the icon */
+    font-size: 16px;
+    border-radius: 8px 0 0 8px;
+}
+
+/* Search icon inside input field */
+.search-icon {
+    position: absolute;
+    left: 10px; /* Position the icon inside the input field */
+    color: #888;
+    font-size: 18px;
+    pointer-events: none; /* Make the icon unclickable */
+}
+
+/* Search button */
+.search-button {
+    background: linear-gradient(145deg, #00796b, #004d40); /* Teal gradient */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.search-button:hover {
+    background-color: #004d40; /* Darker teal on hover */
+}
+
+/* Input styles */
+input[type="text"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
 
 /* Make the headbox fixed */
 .headbox {
@@ -839,15 +873,14 @@ input[type="text"] {
     padding: 15px;
     margin-top: 10px;
     border-radius: 8px;
-    width: 100%;
-    max-width: 700px;
+    width: auto;
+    max-width: 500px;
     color: #333;
     font-size: 15px;
     line-height: 1.6;
     position: absolute;
     overflow-y: auto;
     border: 1px, solid, teal;
-    width: 300px;
     max-height: 400px;
     left: 10px;
 }
