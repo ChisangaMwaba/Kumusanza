@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kumusanza</title>
+    <!-- Font Awesome CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    
     <!-- flag icon css -->
    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css"/>
         <!-- Leaflet.js CSS -->
@@ -67,11 +70,12 @@
         </div>
 
         <!-- Search Box for City Weather -->
-        <div class="search-box">
-            <input type="text" id="cityInput" placeholder="Enter a city name">
-            <button class="search-button" id="searchButton" onclick="fetchCityWeather()">Get Weather</button>
-        </div>
-        <div class="loader" aria-label="Loading, please wait">
+       <div class="search-box">
+    <i class="fas fa-search search-icon"></i>
+    <input type="text" id="cityInput" placeholder="Enter a city name">
+    <button class="search-button" id="searchButton" onclick="fetchCityWeather()">Get Weather</button>
+</div>
+<div class="loader" aria-label="Loading, please wait">
     <div></div>
     <div></div>
     <div></div>
@@ -163,7 +167,7 @@
     <p>We aim for Kumusanza to become a trusted, global weather resource, while continuing to serve the Southern Province of Zambia, expanding coverage, and providing localized information for communities worldwide.</p>
     
     <h3>About the Founder</h3>
-    <p>Chisanga Mwaba is an undergraduate student pursuing a Bachelor of Science in Electrical and Electronics Engineering. With a passion for web development and technology's potential to improve lives, Chisanga developed Kumusanza to showcase how technology can solve everyday problems, specifically in weather information access for the people of Southern Zambia.</p>
+    <p>Chisanga Mwaba is an undergraduate student pursuing a Bachelor of Science in Electrical and Electronics Engineering. With a passion for web development and technology's potential to improve lives, Chisanga developed Kumusanza to showcase how technology can solve day to day problems, specifically in weather information access for the people of Southern Zambia.</p>
     
     <h3>Technical Details</h3>
     <ul>
@@ -171,54 +175,66 @@
         <li>CSS3 for creating a visually appealing and responsive design</li>
         <li>JavaScript for adding dynamic features and client-side interactivity</li>
         <li>OpenWeatherMap API for accurate, up-to-date weather data and icons</li>
-        <li>Background images sourced from Pexels, Unsplash, and Freepik for enhanced visual appeal</li>
+        <li>Background images sourced from Pexels, Unsplash, and Freepik for enhanced visual appeal
+        <li>EmailJs for transmission of feedback</li>
+        <li>Weather display icons sourced from font awesome.</li>
+        </li>
     </ul>
     
     <h3>Features and Goals</h3>
-    <ul>
-        <li>Provide accurate, real-time weather forecasts and conditions</li>
-        <li>Allow users to set favorite cities for easy access to weather updates</li>
-        <li>Enable language toggling between English and French</li>
-        <li>Support unit switching between Celsius/Fahrenheit for temperature, and m/s/MPH for wind speed</li>
-        <li>Integrate a dynamic background based on weather conditions for improved user experience</li>
-        <li>Future plans to add more languages, background images, and features like UV index and maps</li>
-    </ul>
+<ul>
+    <li>Provide accurate, real-time weather forecasts and conditions</li>
+    <li>Allow users to set favorite cities for easy access to weather updates</li>
+    <li>Enable language toggling between English, Japanese, and French</li>
+    <li>Support unit switching between Celsius/Fahrenheit for temperature, and m/s/MPH for wind speed</li>
+    <li>Integrate a dynamic background based on weather conditions for improved user experience</li>
+    <li>Include interactive maps for visual weather representation</li>
+    <li>Provide a feedback section for user suggestions and improvements</li>
+    <li>Future plans: To add more languages, background images, and features like UV index</li>
+</ul>
     
     <p>Thank you for visiting Kumusanza. For more information or assistance, please click <button id="ContactDetails" onclick="toggleContactDetails()">Contact Us</button></p>
 </div>
     
-   <div id="helpInfo">
+<div id="helpInfo">
     <h3>How to Use Kumusanza</h3>
     
     <h4>Getting Started</h4>
-    <p>Welcome to <strong>Kumusanza, Southern Zambia Weather Hub</strong>! Here, you can view real-time weather updates and forecasts for Southern Province, Zambia, and any city around the world. Simply enter a city name in the search box to get started and view accurate weather data.</p>
+    <p>Welcome to <strong>Kumusanza, Southern Zambia Weather Hub</strong>! Here, you can view real-time weather updates and forecasts for Southern Province, Zambia, and any city around the world. Use the navigation menu to explore the platform's features and functionalities.</p>
 
     <h4>Main Features</h4>
-<ul>
-    <li><strong>Search for Weather</strong>: Enter a city name in the search box and click "Get Weather" to view the current weather conditions for that city.</li>
-    <li><strong>5-Day Forecast</strong>: Scroll through the “5-Day Forecast” section to see upcoming weather predictions for the next five days, updated every 3 hours.</li>
-    <li><strong>Favourites</strong>: Click "Add to Favorites" to save a city for easy access. View your favorite cities under "Favourites" in the menu.</li>
-    <li><strong>Change Units</strong>: Use the "Change Units" option in the menu to toggle between Celsius and Fahrenheit for temperature as well as meters per second and miles per hour for windspeed.</li>
-    <li><strong>Languages</strong>: Switch between English and French by selecting the language option in the menu. Additional languages may be added in future updates.</li>
-    <li><strong>Dynamic Background</strong>: Enjoy a personalized experience with dynamic background images based on the weather conditions for each city.</li>
-</ul>
+    <ul>
+        <li><strong>Search for Weather</strong>: Enter a city name in the search box and click "Get Weather" to view the current weather conditions for that city.</li>
+        <li><strong>5-Day Forecast</strong>: View a detailed 5-day forecast, updated every 3 hours, to help you plan ahead.</li>
+        <li><strong>Favourites</strong>: Save your preferred cities by clicking "Add to Favorites." Access them anytime from the "Favourites" section in the menu.</li>
+        <li><strong>Change Units</strong>: Switch between Celsius and Fahrenheit for temperature, as well as m/s and MPH for wind speed, using the "Change Units" option in the menu.</li>
+        <li><strong>Languages</strong>: Change the platform language to English, French, or Japanese via the "Languages" menu.</li>
+        <li><strong>Interactive Map</strong>: Explore real-time weather conditions with the integrated interactive weather map.</li>
+        <li><strong>Feedback</strong>: Share your suggestions, report issues, or provide feedback using the "Feedback" form at the bottom of the page.</li>
+        <li><strong>Dynamic Background</strong>: Experience weather-adaptive backgrounds that enhance the visual appeal based on current conditions.</li>
+        <li><strong>Reset Preferences</strong>: Use the "Reset All Preferences" button to restore default settings.</li>
+    </ul>
 
-<h4>Frequently Asked Questions</h4>
-<p><strong>How often is the weather updated?</strong> Weather data is updated every 3 hours for the forecast and every hour for real-time conditions.</p>
-<p><strong>Can I set a default city?</strong> Yes! Under “Cities” in the menu, you can select and set any city as your default location for easy access.</p>
-<p><strong>Where does the weather data come from?</strong> We use the <a href="https://openweathermap.org" target="_blank"><strong>OpenWeatherMap API</strong></a> for real-time weather data and forecasts.</p>
-<p><strong>Where do the background images come from?</strong> The dynamic background images are sourced from <a href="https://www.pexels.com" target="_blank">Pexels</a>, <a href="https://unsplash.com" target="_blank">Unsplash</a>, and <a href="https://www.freepik.com" target="_blank">Freepik</a>.</p>
+    <h4>Frequently Asked Questions</h4>
+    <p><strong>How often is the weather updated?</strong> Weather data is updated every 3 hours for the forecast and every hour for real-time conditions.</p>
+    <p><strong>Can I set a default city?</strong> Yes, you can! To do so, navigate to the "Cities" option in the dropdown menu located in the top left corner. From there, you can select your preferred city from the provided list and set it as your default. Please note that only cities from the Southern Province of Zambia are included in the list.</p>
+    <p><strong>Where does the weather data come from?</strong> We use the <a href="https://openweathermap.org" target="_blank"><strong>OpenWeatherMap API</strong></a> for accurate and reliable weather information.</p>
+    <p><strong>Where do the background images come from?</strong> The dynamic background images are sourced from <a href="https://www.pexels.com" target="_blank">Pexels</a>, <a href="https://unsplash.com" target="_blank">Unsplash</a>, and <a href="https://www.freepik.com" target="_blank">Freepik</a>.</p>
+
     <h4>Need More Help?</h4>
-    <p>If you have additional questions, feel free to contact us via the “Contact Us” button or reach out to Chisanga Mwaba directly at <strong>+260962802464</strong>.</p>
+    <p>If you have additional questions, feel free to contact us via the "Contact Us" button or reach out to Chisanga Mwaba directly at <strong>+260962802464</strong>.</p>
 </div>
+
     
-<div id="contactInfo">  
-    <h3>Contact Details</h3>
-    <p><strong>Name:</strong> Chisanga Mwaba</p>
-    <p><strong>Phone Numbers:</strong> +260962802464 / +260978942242</p>
-    <p><strong>Email:</strong> Chisanga_Mwaba@yahoo.com</p>
-    <p><strong>WhatsApp:</strong> <a href="https://wa.me/+260962802464" target="_blank">Click here to chat</a></p>
-</div>
+
+    
+    <div id="contactInfo">
+        <h3>Contact Details</h3>
+        <p><i class="fas fa-user"></i> <strong>Name:</strong> Chisanga Mwaba</p>
+        <p><i class="fas fa-phone-alt"></i> <strong>Phone:</strong> +260962802464 / +260978942242</p>
+        <p><i class="fas fa-envelope"></i> <strong>Email:</strong> <a href="mailto:Chisanga_Mwaba@yahoo.com">Chisanga_Mwaba@yahoo.com</a></p>
+        <p><i class="fab fa-whatsapp"></i> <strong>WhatsApp:</strong> <a href="https://wa.me/+260962802464" target="_blank">Click here to chat</a></p>
+    </div>
     
    
    
