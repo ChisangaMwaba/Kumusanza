@@ -1,4 +1,4 @@
-const ApiKey = "cd8161af3d4a4608f689e4dc5f2613dc";
+const ApiKey = "cd8161af3d4a4608f689e4dc5f2613dc"; // Replace with your OpenWeatherMap API key
 
 // Preload background images
 const preloadImages = [
@@ -22,12 +22,12 @@ function initPage() {
                 fetchWeatherByCoordinates(latitude, longitude); // Fetch weather by geolocation
             },
             () => {
-                console.warn("Geolocation not available or denied.");
+                showNotification("Geolocation not available or denied.");
                 handleFallback(); // Handle fallback to default location or Livingstone
             }
         );
     } else {
-        console.warn("Geolocation not supported.");
+        showNotification ("Geolocation not supported.");
         handleFallback(); // Handle fallback to default location or Livingstone
     }
 }
@@ -37,10 +37,10 @@ function handleFallback() {
     const defaultLocation = localStorage.getItem("defaultLocation");
 
     if (defaultLocation) {
-        console.info(`Using default location: ${defaultLocation}`);
+        showNotification(`Your current default city is ${defaultLocation}`);
         fetchWeatherByCity(defaultLocation); // Fetch weather for the default location
     } else {
-        console.warn("No default location set. Falling back to Livingstone.");
+        showNotification("No default location set. Falling back to Livingstone.");
         fetchWeatherByCity("Livingstone"); // Fallback to Livingstone
     }
 }
@@ -81,7 +81,7 @@ function fetchWeatherByCity(cityName) {
     fetch(apiUrl)
         .then((response) => {
             if (!response.ok) {
-                throw new Error(`Error fetching weather data for ${cityName}`);
+                showNotification(`Error fetching weather data for ${cityName}`);
             }
             
             
@@ -101,10 +101,10 @@ function displayCurrentWeather(cityName, data) {
     const weatherDisplay = document.getElementById("dailyDisplay");
     weatherDisplay.innerHTML = `
         <h2>Weather in ${cityName}</h2>
-        <p>Temperature: ${data.main ? data.main.temp : "N/A"}°C</p>
-        <p>Condition: ${data.weather ? data.weather[0].description : "N/A"}</p>
-        <p>Humidity: ${data.main ? data.main.humidity : "N/A"}%</p>
-        <p>Wind Speed: ${data.wind ? data.wind.speed : "N/A"} m/s</p>
+        <p><i class="fas fa-thermometer-half"></i> Temperature: ${data.main ? data.main.temp : "N/A"}°C</p>
+        <p><i class="fas fa-cloud"> </i>Condition: ${data.weather ? data.weather[0].description : "N/A"}</p>
+        <p><i class="fas fa-tint"> </i> Humidity: ${data.main ? data.main.humidity : "N/A"}%</p>
+        <p><i class="fas fa-wind"></i> Wind Speed: ${data.wind ? data.wind.speed : "N/A"} m/s</p>
     `;
 }
 
