@@ -1,210 +1,867 @@
-/*weather display styles*/
-.weather-container {
-    padding-top: 20px;
-    padding-bottom: 20px;
-    width: 95%;
-    max-width: 600px;
+/* General legend container styling */
+.info.legend {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    font-size: 13px;
+    color: #333;
+    max-width: 300px;
+    word-wrap: break-word;
+    box-sizing: border-box;
+}
+
+/* Title styling */
+.info.legend h4 {
+    margin: 0 0 10px;
+    font-weight: bold;
+    font-size: 14px;
+    text-align: left;
+}
+
+/* Styling for each legend item (color box + text) */
+.info.legend div {
+    display: flex;
     align-items: center;
-    text-align: center;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-    background-color: rgba(250, 250, 250, 0.4) !important;
-    margin: 20px auto;
+    margin-bottom: 5px;
+}
+
+/* Align icons */
+.info.legend i {
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+    margin-right: 8px;
+    vertical-align: middle;
+    border-radius: 3px;
+    opacity: 0.8;
+}
+
+/* Styling for text next to color boxes */
+.info.legend span {
+    display: inline-block;
+    text-align: left;
+    white-space: nowrap;
+}
+
+/* Style for the box containing the weather information and icon */
+.marker {
+    background-color: rgba(224, 247, 250, 0.4);
+    color: teal;
+    padding: 10px 15px;
+    border-radius: 20px;
+    box-shadow: 0px 4px 12px rgba(169, 169, 169, 0.3);
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    max-width: 200px;
+    position: absolute;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+/* Style for the image inside the tooltip box */
+.marker img {
+    filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.5));
+    width: 30px;
+    height: 30px;
+    margin-right: 8px;
+    transition: filter 0.3s ease;
+}
+
+/* Stronger shadow effect on hover */
+.marker img:hover {
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.5);
+    filter: drop-shadow(3px 3px 8px rgba(0, 0, 0, 0.7));
+}
+
+/* Style for the text in the tooltip */
+.marker div {
+    font-size: 14px;
+    line-height: 1.2;
 }
 
 
-#dailyDisplay p, #dailyDisplay h2{
+/* Style for the map container */
+#weather-map-container {
+    padding: 2rem;
+    margin: 1rem auto;
+    max-width: 800px;
+    background: linear-gradient(to bottom, #f0fcfd, #e0f7fa);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    transition: all 0.3s ease-in-out;
+    transform: translateY(0);
+}
+
+#weather-map {
+    width: 100%;
+    height: 400px; 
+    border: 1px solid black;
+}
+
+.map-head {
+    font-weight: 800;
+    text-transform: capitalize;
+    font-size: 1.5rem;
+    color: #00796b;
+}
+
+
+/* General Section Styles */
+#feedback {
+    padding: 2rem;
+    margin: 1rem auto;
+    max-width: 800px;
+    background: linear-gradient(to bottom, #f0fcfd, #e0f7fa);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    transition: all 0.3s ease-in-out;
+    transform: translateY(0);
+}
+
+#feedback:hover {
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
+    transform: translateY(-5px);
+}
+
+/* Section Headers */
+#feedback h2 {
+    color: #00796b; 
+    font-family: 'Pacifico', cursive;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.6rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Form Styling */
+#feedback-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Label Styling */
+#feedback-form label {
+    font-weight: bold;
+    color: #005f56;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+/* Input, Select, and Textarea Styling */
+#name, #email, #category, #message {
+    width: 100%; 
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: 'Arial', sans-serif;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+#name:focus, #email:focus, #category:focus, #message:focus {
+    border-color: #00796b;
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 121, 107, 0.4);
+}
+
+/* Textarea for Feedback */
+#message {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Placeholder Text Styling */
+#name::placeholder, #email::placeholder, #message::placeholder {
+    color: #aaa;
+    font-style: italic;
+}
+
+/* Button Styles */
+.feedbackBtn {
+    align-self: center;
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(to bottom, #00796b, #005f56);
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.feedbackBtn:hover {
+    background: linear-gradient(to bottom, #005f56, #004d4a);
+    transform: scale(1.05);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #feedback {
+        padding: 1.5rem;
+    }
+
+    #feedback h2 {
+        font-size: 1.4rem;
+    }
+
+    #feedback-form label {
+        font-size: 0.95rem;
+    }
+
+    #name, #email, #category, #message {
+        font-size: 0.95rem;
+        padding: 0.7rem;
+    }
+
+    .feedbackBtn {
+        padding: 0.7rem 1.2rem;
+    }
+}
+
+
+/* Basic Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Weather display styles */
+#weatherDisplay h3, #forecastDisplay h3 {
+    margin-bottom: 7px;
+    color: #00796e; 
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    font-size: 1.3em;
+}
+
+#weatherDisplay p, #forecastDisplay p {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #333; 
+    font-family: 'Open sans'
+}
+
+
+#forecastChart {
+    height: auto;
+    width: 100% !important; 
+    margin: 10px auto;
+    border-radius: 10px; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+}
+
+#forecastGraphContainer {
+    padding: 5%;
+    margin: 10px auto;
+    max-width: 800px;
+    background: linear-gradient(to bottom, #f0fcfd, #e0f7fa);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    transition: all 0.3s ease-in-out;
+    transform: translateY(0);
+}
+#forecastGraphContainer:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
+}
+
+#forecastGraphContainer h3 {
+    margin-top: 20px;
+    font-size: 1.5rem;
+    color: #00796b; 
+    text-align: center;
+    margin-bottom: 15px; 
+}
+
+#weatherDisplay {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    width: 95%;
+    max-width: 900px;
+    align-items: center;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: rgba(250, 250, 250, 0.4);
+}
+
+.top-display {
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    width: 100%; 
+}
+
+.temperature {
+    font-family: 'Roboto', sans-serif;
+    font-size: 2rem;
+    color: darkgreen; 
+    margin-right: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    transition: color 0.3s; 
+}
+
+
+.weather-icon img {
+    width: 90px;
+    height: auto;
+    filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.5)); 
+}
+
+.weather-details {
+    display: flex;
     justify-content: space-between;
     align-items: center;
     max-width: 300px; 
     width: 100%;
     padding: 0 15px; 
-    margin: 0 auto; /* Centers the container horizontally */
+    margin: 0 auto; 
     font-family: 'Open Sans';
     font-weight: bold;
     margin-bottom: 5px;
 }
 
-
-/*notification box styles*/
-.notification {
-    padding: 12px 20px;
-    background-color: #00796b;
-    color: white;
-    font-size: 16px;
-    font-weight: 500;
-    border-radius: 8px;
-    position: fixed;
-    top: 150px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-100%);
-    z-index: 5000;
-    opacity: 0;
-    visibility: hidden; 
-    transition: transform 0.4s ease, opacity 0.4s ease, visibility 0.4s ease;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+.subject {
+    flex: 0 0 140px; 
+    text-align: left;
 }
 
-/* Add the 'show' class to make it visible */
-.notification.show {
-    opacity: 0.9;
-    visibility: visible;
-    transform: translateX(-50%) translateY(0); /* Bring it to the center */
+.object {
+    flex: 0 0 125px;
+    text-align: right;
 }
 
-/* body styles*/
-body {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    background: url('https://images.unsplash.com/photo-1561470508-fd4df1ed90b2?q=80&w=876&auto=format&fit=crop&ixlib=rb-4.0.3') no-repeat center/cover; /* Static fallback */
-    background-size: cover;
-    background-position: center;
-    transition: background 2s ease-in-out; /* Smooth fading */
+
+#forecastDisplay{
+    width: 95%;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  background-color: rgba(250, 250, 250, 0.3);
 }
 
-body.background-ready::before {
-    animation: dynamicBackground 30s infinite;
+/* Hover Effect */
+#forecastDisplay:hover {
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
 }
-@keyframes dynamicBackground {
-    0% { background: url('https://images.unsplash.com/photo-1561470508-fd4df1ed90b2?q=80&w=876&auto=format&fit=crop&ixlib=rb-4.0.3') no-repeat center/cover; }
-    20% { background: url('https://images.unsplash.com/photo-1561553543-e4c7b608b98d?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.0.3') no-repeat center/cover; }
-    40% { background: url('https://images.unsplash.com/photo-1617141869037-a0db4d26b6af?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.0.3') no-repeat center/cover; }
-    60% { background: url('https://images.unsplash.com/photo-1418985991508-e47386d96a71?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.0.3') no-repeat center/cover; }
-    80% { background: url('https://images.pexels.com/photos/2043035/pexels-photo-2043035.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2') no-repeat center/cover; }
-    100% { background: url('https://images.unsplash.com/photo-1561470508-fd4df1ed90b2?q=80&w=876&auto=format&fit=crop&ixlib=rb-4.0.3') no-repeat center/cover; }
+
+/* Forecast Item */
+.forecast-item {
+    overflow-x: auto;
+    text-align: center;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgba(0, 3, 4, 0.7);
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
 }
-/* Spinner container */
-.spinner-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+
+/* Time Text */
+.forecast-item p strong {
+    font-size: 1.1em;
+    color: #00796b;
+}
+
+/* Temperature and Icon Container */
+.hour-top {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
+    gap: 2px;
 }
 
-/* Spinner animation */
-.spinner {
-    width: 50px;
-    height: 50px;
-    border: 6px solid rgba(255, 255, 255, 0.3); /* Light border */
-    border-top: 6px solid #fff; /* Bold border for animation */
-    border-radius: 50%;
-    animation: spin 1s linear infinite; /* Rotate indefinitely */
-}
-
-/* Spinner keyframes */
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-/* Hide the spinner when background is ready */
-body.background-ready #loadingSpinner {
-    display: none;
-}
-
-/* Welcome message */
-.welcome-message {
-    margin: 20px auto;
+/* Temperature Text */
+.hour-temp {
+    font-size: 1.2em;
     font-weight: bold;
-    font-size: 1.5rem;
-    font-family: 'Pacifico', cursive; 
-    color: antiquewhite;
-    text-align: center;
-    text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3);
-    max-width: 800px; 
-    width: 90%; 
-    transition: color 0.3s ease;
-    margin-top: 20px;
+    color: #333;
 }
 
-header h1 {
-    color: #00796b;
+/* Weather Icon Styling */
+.forecast-icon img {
+    width: 60px;
+    height: auto;
+    max-width: 100%;
+    filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.5));
+}
+
+/* Weather Description */
+#forecastDisplay p {
+    font-size: 0.9em;
+    color: #555;
+    margin: 5px 0;
+}
+/* Responsive design */
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+
+    .forecast-item {
+        min-width: 100px; 
+    }
+}
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    #forecastDisplay {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .forecast-item {
+        flex: 1 1 100%;
+        margin: 5px 0;
+    }
+
+    .forecast-icon img {
+        width: 45px;
+    }
+
+    .hour-temp {
+        font-size: 1em;
+    }
+}
+
+body {
+    font-family: Arial, sans-serif;
     margin: 0;
-    font-size: 2.5rem; /* Increase the size for more impact */
-    font-family: 'Roboto', sans-serif; /* A more modern, clean font */
-    font-weight: bold; /* Makes the heading bolder */
-    text-align: center; /* Center-align the text */
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Light shadow for depth */
-    letter-spacing: 2px; /* Adds some spacing between letters for readability */
-    padding: 10px 0; /* Adds some padding to make the header more spacious */
-    transition: color 0.3s ease; /* Smooth transition for color change */
+    padding: 0;
+    background-color: #e0f7fa; 
+    color: #333;
 }
-
-header h1:hover {
-    color:#00796c ; 
-    text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.7); 
-}
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
 
 
-/* Headings */
-h2, h3, h4 {
-    color: teal; /* Heading color */
-}
-
-/* Buttons */
-#homeBtn {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 1rem;
-    color: white;
-    background: linear-gradient(145deg, #00796b, #004d40);
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-
-
-main {
-    flex: 1;
-}
-
-footer {
-    background: teal;
-    color: white;
+.language-menu {
+    text-align: left;
+    display: none;
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 100;
     padding: 10px;
-    font-size: 0.9rem;
+    list-style: none;
+    border-radius: 5%;
+}
+
+.language-menu ul {
+    padding: 0;
+    margin: 0;
+}
+
+.language-menu li {
+    border-bottom: 1px solid gray; 
+    padding: 5px 10px;
+    cursor: pointer;
+}
+.language-menu li:last-of-type {
+    border-bottom: none;
+    
+}
+
+.language-menu li:hover {
+    background-color: #f0f0f0;
+}
+
+.fi {
+width: 30px;
+    height: auto;
+    filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.5));
+}
+
+.unitsDropdown{
+    text-align: justify;
+    position: absolute;
+    display: none;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    max-height: 200px;
+    overflow-y: auto;
+    border-radius: 5px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 4px;
+}
+#metricBtn, #imperialBtn{
+    background-color: #007bff;;
+    color: #fff;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-left: 10px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    
+}
+
+/*Styles for Favourites*/
+#listOfFavourites {
+    position: absolute;
+    display: none;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    max-height: 200px;
+    overflow-y: auto;
+    border-radius: 5px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 4px;
+}
+
+#listOfFavourites div {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    cursor: pointer;
+    }
+
+#listOfFavourites div:last-child {
+    border-bottom: none;
+}
+
+#listOfFavourites div:hover {
+    background-color: #e0e0e0;
+}
+#listOfFavourites button {
+    background-color: #007bff;;
+    color: #fff;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-left: 10px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#listOfFavourites button:hover {
+    background-color: #ff3b3b;
+}
+
+/*Styles for the AddtoFavourites button */
+.Fav {
+    align-self: flex-start; 
+    margin-bottom: 20px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(145deg, #00796b, #004d40); /* Teal gradient */
+    border: none;
+    border-radius: 12px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2), -4px -4px 10px rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
     text-align: center;
 }
 
+/* Hover Effect */
+.Fav:hover {
+    background: linear-gradient(145deg, #004d40, #00796b);
+    transform: translateY(-3px);
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3), -2px -2px 8px rgba(255, 255, 255, 0.2);
+}
+
+/* Active Effect */
+.Fav:active {
+    background: linear-gradient(145deg, #00332e, #004d40);
+    transform: translateY(2px);
+    box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* Focus Effect */
+.Fav:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(0, 121, 107, 0.5);
+}
+
+/*Styles for the container*/
+.container {
+    display: flex;
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    align-content: center; 
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    margin-top: 40px;
+    height:auto;
+}
+
+.container.snowy {
+    background-image: url('https://images.pexels.com/photos/2086620/pexels-photo-2086620.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+    background-position: center;
+    background-size: cover;
+}
+
+.container.sunny {
+    background-image: url('https://images.pexels.com/photos/789152/pexels-photo-789152.jpeg');
+    background-position: center;
+    background-size: cover;
+}
+
+.container.thunderstorm {
+    background: url('https://images.unsplash.com/photo-1492011221367-f47e3ccd77a0?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    background-position: center;
+    background-size: cover;
+}
+
+.container.rainy {
+    background: url('https://images.pexels.com/photos/2144326/pexels-photo-2144326.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+    background-position: center;
+    background-size: cover;
+}
+
+
+.container.default{
+    background: url('https://img.freepik.com/free-photo/vertical-shot-thick-green-trees-calm-sky-with-few-clouds_181624-7403.jpg?t=st=1730970666~exp=1730974266~hmac=d8132430bcae602cfb45a169c8046af52e8a84ec68f1ecb595ce37acfdbfa9b2&w=1060');
+    background-position: center;
+    background-size: cover;
+}
+
+.container.cloudy {
+    background-image: url('https://images.pexels.com/photos/8648188/pexels-photo-8648188.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+    background-position: center;
+    background-size: cover;
+}
+
+
+
+
+/*Styles for the menu icon and content*/
+.menu-icon {
+    font-size: 30px;
+    cursor: pointer;
+    padding: 5px;
+    margin: 10px;
+    color: #00796b;
+}
+
+.menu-content {
+    font-weight: 500;
+    border: 1px solid teal;
+    display: none;
+    position: absolute;
+    top: 50px;
+    left: 10px;
+    background-color: #e0f7fa;
+    color: #333;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 1;
+}
+.menu-content a {
+    text-align: left;
+    padding: 8px 0;  /* Space above and below each item */
+    border-bottom: 1px solid #00796b;  /* Dividing line between items */
+}
+
+.menu-content a:last-of-type {
+    border-bottom: none;
+}
+.menu-content a {
+    display: block;
+    padding: 8px 16px;
+    color: #00796b;
+    text-decoration: none;
+}
+
+.menu-content a:hover {
+    background-color: #b2dfdb;
+}
+
+.menu-content ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu-content ul li {
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.menu-content ul li:hover {
+    background-color: #b2dfdb;
+}
+
+/* Show the menu when the 'show' class is added */
+.menu-content.show {
+    display: block;
+}
+
+
+
+/* Forecast Item */
+.forecast-item {
+    opacity: 0.75;
+    margin-bottom: 15px;
+    margin-right: 10px;
+    padding: 10px;
+    border: 1px solid #cfd8dc;
+    border-radius: 20px;
+    background-color: #e0f7fa;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-emphasis: black;
+    min-width: 120px;
+    flex: none;
+}
+
+/* Hover Effect for Floating Animation */
+.forecast-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* Horizontal scrolling for hourly forecast */
+.hourly-forecast {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+
+.lining {
+    text-align: center;
+}
+
+.time {
+    margin: 0 auto;
+    text-align: center;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.5em;
+    color: darkgreen;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 255, 255, 0.6);
+    animation: pulse 2s infinite;
+    display: inline-block;
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px; 
+    font weight: bold;
+    vertical-align: middle;
+}
+
+/* Animation for a subtle pulsing effect */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 255, 255, 0.6);
+    }
+    50% {
+        transform: scale(1.05);
+        text-shadow: 0 0 20px rgba(0, 0, 0, 1), 0 0 30px rgba(255, 255, 255, 0.8);
+    }
+}
+
+/* Styling for the search box */
+.search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    max-width: 400px;
+    margin: 20px auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Input field */
+#cityInput {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 10px 10px 10px 35px; 
+    font-size: 16px;
+    border-radius: 8px 0 0 8px;
+}
+
+/* Search icon inside input field */
+.search-icon {
+    position: absolute;
+    left: 10px; 
+    color: #888;
+    font-size: 18px;
+    pointer-events: none; 
+}
+
+/* Search button */
+.search-button {
+    background: linear-gradient(145deg, #00796b, #004d40); /* Teal gradient */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.search-button:hover {
+    background-color: #004d40; 
+}
+
+/* Input styles */
+input[type="text"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* Make the headbox fixed */
+.headbox {
+    text-align: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 3000;
+    padding: 3px;
+    background-color: #e0f7fa;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 50px; 
+    display: flex;
+    align-items: center; 
+}
+
+
+
+/* Footer container */
 .UnderCredits {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 20px;
+    gap: 20px; 
     padding: 15px;
     border-top: 1px solid #ddd;
     flex-wrap: wrap;
 }
 
+/* Button styling */
 .link {
     padding: 8px 16px;
     font-size: 14px;
@@ -219,28 +876,36 @@ footer {
 
 .link:hover {
     transform: translateY(-2px);
-    background-color: #0056b3;
+    background-color: #007BFF;
     color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* Information sections */
 #aboutInfo, #helpInfo, #contactInfo {
     display: none;
-    position: relative;
     background-color: #f1f1f1;
     padding: 15px;
     margin-top: 10px;
     border-radius: 8px;
-    max-width: 700px;
+    width: auto;
+    max-width: 500px;
     color: #333;
     font-size: 15px;
     line-height: 1.6;
+    position: absolute;
     overflow-y: auto;
-    border: 1px solid teal;
-    width: auto;
+    border: 1px, solid, teal;
     max-height: 400px;
+    left: 10px;
 }
 
+/* Styling for headers and paragraphs within info sections */
+#aboutInfo h3, #helpInfo h3, #contactInfo h3 {
+    color: #007BFF;
+    margin-top: 0;
+}
+
+/* Responsive styling */
 @media (max-width: 768px) {
     .UnderCredits {
         flex-wrap: wrap;
@@ -249,19 +914,119 @@ footer {
 
     .link {
         padding: 8px 12px;
-        font-size: 12px;
     }
 
-    #aboutInfo, #helpInfo, #contactInfo {
-        max-width: 350px;
-        width: auto;
-        left: 20px;
-    }
-}
-.school-links{text-align: left;
-    margin: 20px;
 }
 
+
+/* Cities Dropdown Menu */
+.cities-menu {
+    position: absolute;
+    display: none;
+    background-color: #f8f9fa;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 300px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* List Style */
+.cities-menu ul {
+    list-style: none;
+}
+
+/* List Item Style */
+.cities-menu li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    transition: background-color 0.2s;
+}
+
+/* Hover Effect */
+.cities-menu li:hover {
+    background-color: #e2e6ea;
+}
+
+/* City Name Style */
+.cities-menu span {
+    font-size: 16px;
+    color: #333;
+    cursor: pointer;
+}
+
+/* Button Style */
+.cities-menu button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Button Hover Effect */
+.cities-menu button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Button Focus Effect */
+.cities-menu button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+}
+
+/* Loader */
+.loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.loader div {
+    width: 10px;
+    height: 10px;
+    margin: 5px;
+    border-radius: 50%;
+    background-color: aliceblue;
+    animation: bounce 0.4s infinite alternate;
+}
+
+.loader div:nth-child(2) {
+    animation-delay: 0.2s; /* Delay for the second dot */
+}
+
+.loader div:nth-child(3) {
+    animation-delay: 0.4s; /* Delay for the third dot */
+}
+
+@keyframes bounce {
+    to {
+        transform: translateY(-20px);
+    }
+}
+
+.school-links {
+    margin: 15px;
+    margin-bottom: 25px;
+    padding: 10px;
+    margin-top: 40px;
+    text-align: left;
+}
 .school-links a {
     color: #007bff;
     text-decoration: none;
@@ -270,3 +1035,167 @@ footer {
 .school-links a:hover {
     color: #0056b3;
 }
+
+.copyright {
+    padding: 15px;
+    text-align: center;
+    background-color: #f8f9fa; /* Light gray background */
+    color: #343a40; /* Dark text for contrast */
+    font-size: 0.9rem; /* Slightly smaller text */
+    border-top: 1px solid #dee2e6; /* Subtle border at the top */
+    overflow-x: hidden; /* Prevent horizontal overflow issues */
+}
+
+.copyright p {
+    margin: 5px 0; /* Reduce spacing for cleaner look */
+    line-height: 1.5; /* Improve readability */
+}
+
+.copyright a {
+    color: #007bff; /* Blue links */
+    text-decoration: none; /* Remove underline */
+    transition: color 0.3s ease; /* Smooth color change on hover */
+}
+
+.copyright a:hover {
+    color: #0056b3; /* Darker blue on hover */
+}
+
+/*Add a subtle hover effect for the entire copyright section */
+.copyright:hover {
+    background-color: #e9ecef; 
+}
+
+/* Modal Styles */
+.modal {
+    text-align: center;
+    display: show; 
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 5000; 
+    width: 80%;
+    max-width: 400px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s ease;
+}
+
+/* Modal visible state when 'show' class is added */
+.modal.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%);
+}
+
+/* Modal Content */
+.modal h2 {
+    font-size: 18px;
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* Modal Buttons */
+.modal-buttons button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    background-color: #00796b;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.modal-buttons button:last-child {
+    background-color: #f44336; /* Red for Cancel */
+}
+
+.modal-buttons button:hover {
+    background-color: #004d40;
+}
+
+.modal-buttons button:last-child:hover {
+    background-color: #e53935;
+}
+.notification {
+    text-align: center;
+    padding: 12px 20px;
+    background-color: #00796b;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 8px;
+    position: fixed;
+    top: 150px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100%);
+    z-index: 5000;
+    opacity: 0; /* Initially hidden */
+    visibility: hidden; /* Initially hidden */
+    transition: transform 0.4s ease, opacity 0.4s ease, visibility 0.4s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Add the 'show' class to make it visible */
+.notification.show {
+    opacity: 0.9;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0); /* Bring it to the center */
+}
+
+.align{
+   display: inline-block;
+    text-align: center;
+}
+
+.subtitle {
+    text-align: center;
+    color: #ffffff;
+    font-family: 'Pacifico', cursive;
+    font-size: 2.1em;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.6);
+    font-weight: 900;
+    padding: 10px 20px;
+    border-radius: 8px;
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: middle;
+}
+
+.subtitle span {
+    display: inline-block;
+    animation: crazyWave 1.5s ease-in-out 3;
+}
+
+@keyframes crazyWave {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+h2 {
+    font-size: 17px;
+    font-weight: 500;
+    color: #004d40;  
+    letter-spacing: 0.25px;
+    text-transform: uppercase;
+    text-align: center;
+    display: block;
+    margin-top: 8px;
+    margin-bottom: 16px;
+    font-family: 'Arial', sans-serif;  /* A more compact sans-serif font */
+    padding: 5px 10px;  /* Less padding for a more compact feel */
+    z-index: 1;
+    }
